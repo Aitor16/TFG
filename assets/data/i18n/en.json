@@ -1,0 +1,115 @@
+{
+  "BATTLE_MENU": {
+    "FIGHT": "FIGHT",
+    "SWITCH": "SWITCH",
+    "ITEM": "ITEM",
+    "FLEE": "FLEE",
+    "WHAT_SHOULD_DO": "What should",
+    "DO_NEXT": "do next?",
+    "NO_ALLIES": "You have no other allies in your party",
+    "FAIL_FLEE": "You fail to runaway",
+    "USED_ITEM": "You used the following item: {itemName}"
+  },
+  "OPTIONS_MENU": {
+    "TITLE": "SETTINGS",
+    "TEXT_SPEED": "TEXT SPEED",
+    "BATTLE_SCENE": "BATTLE SCENE",
+    "BATTLE_STYLE": "BATTLE STYLE",
+    "SOUND": "SOUND",
+    "VOLUME": "VOLUME",
+    "RUST_PATTERN": "RUST PATTERN",
+    "LANGUAGE": "LANGUAGE",
+    "LANGUAGE_OPTIONS": {
+      "ENGLISH": "ENGLISH",
+      "SPANISH": "SPANISH"
+    },
+    "TEXT_SPEED_OPTIONS": {
+      "SLOW": "SLOW",
+      "MID": "MID",
+      "FAST": "FAST"
+    },
+    "BATTLE_SCENE_OPTIONS": {
+      "ON": "ON",
+      "OFF": "OFF"
+    },
+    "BATTLE_STYLE_OPTIONS": {
+      "SET": "SET",
+      "SHIFT": "SHIFT"
+    },
+    "SOUND_OPTIONS": {
+      "ON": "ON",
+      "OFF": "OFF"
+    },
+    "SURVIVE": "SURVIVE",
+    "INFO": {
+      "TEXT_SPEED": "Choose one of three text display speeds. Faster speeds help you survive longer.",
+      "BATTLE_SCENE": "Choose to display battle animations and effects or not. Conserves energy in the wasteland.",
+      "BATTLE_STYLE": "Choose to allow your monster to be recalled between rounds. Adapt to survive.",
+      "SOUND": "Choose to enable or disable the sound. Silence can be your ally.",
+      "VOLUME": "Choose the volume for the music and sound effects. Hear the approaching danger.",
+      "MENU_COLOR": "Choose one of the three rust patterns for your interface.",
+      "LANGUAGE": "Select your preferred language for the wasteland interface.",
+      "CONFIRM": "Save your changes and return to the wasteland."
+    }
+  },
+  "TITLE_MENU": {
+    "NEW_GAME": "NEW GAME",
+    "CONTINUE": "CONTINUE",
+    "OPTIONS": "OPTIONS",
+    "NEW_GAME_DESC": "New Journey",
+    "CONTINUE_DESC": "Continue Quest",
+    "OPTIONS_DESC": "Adjust Settings",
+    "SUBTITLE": "SURVIVE. ADAPT. ENDURE."
+  },
+  "ATTACKS": {
+    "1": "Slash",
+    "2": "Grenade"
+  },
+  "ITEMS": {
+    "1": {
+      "NAME": "Potion",
+      "DESC": "A basic healing item. Heals 20 HP"
+    }
+  },
+  "INVENTORY": {
+    "TITLE": "Items",
+    "CANCEL": "Cancel",
+    "CANCEL_DESC": "Close the bag and follow with your adventure"
+  },
+  "MONSTER_PARTY": {
+    "CANCEL": "CANCEL",
+    "GO_BACK_PREVIOUS": "Go back to previous menu",
+    "CHOOSE_MONSTER": "Choose a monster",
+    "CANNOT_HEAL_FAINTED": "Cannot heal fainted monsters",
+    "ALREADY_FULL_HP": "Monster is already full HP",
+    "HEALED_BY": "Healed monster by {amount} HP"
+  },
+  "MONSTER_DETAILS": {
+    "TITLE": "Monster Details"
+  },
+  "WORLD": {
+    "SAVE_SUCCESS": "Game progress has been saved",
+    "CANNOT_READ_SIGN": "You cannot read the sign from this direction.",
+    "NPC_TIPS": "Make sure you talk to npcs for helpful tips!",
+    "EXIT_CONFIRM": "Progress will be lost. Exit anyway?"
+  },
+  "WORLD_MENU": {
+    "MONSTERS": "MONSTERS",
+    "BAG": "BAG",
+    "SAVE": "SAVE",
+    "EXIT": "EXIT",
+    "OPTIONS": "OPTIONS",
+    "MONSTERDEX": "MONSTERDEX",
+    "YES": "YES",
+    "NO": "NO"
+  },
+  "BATTLE": {
+    "PLAYER_USED_ATTACK": "{monster} used {attack}",
+    "ENEMY_USED_ATTACK": "{monster} used {attack}",
+    "ENEMY_FAINTED": "Wild {monster} fainted, You have gained some experience",
+    "PLAYER_FAINTED": "{monster} fainted, You have no more monsters, escaping to safety...",
+    "WILD_MONSTER_APPEARED": "A wild {monster} emerges from the wasteland!",
+    "GO_MONSTER": "Go {monster}! Fight for survival!",
+    "FLEE_SUCCESS": "You escaped from the wasteland horror!"
+  }
+}

@@ -1,0 +1,135 @@
+import Phaser from "../../lib/phaser.js";
+import { HEALTH_BAR_ASSET_KEYS } from "../../assets/asset-keys.js";
+
+export class HealthBar {
+    /** @type {Phaser.Scene} */
+    #scene;
+    /**@type {Phaser.GameObjects.Container} */
+    #healthBarContainer;
+    /** @type {number} */
+    #fullWidth
+    /** @type {number} */
+    #scaleY
+    /** @type {Phaser.GameObjects.Image} */
+    #middle
+    /** @type {Phaser.GameObjects.Image} */
+    #leftCap
+    /** @type {Phaser.GameObjects.Image} */
+    #rightCap
+    /**@type {Phaser.GameObjects.Image} */
+    #leftShadowCap;
+    /**@type {Phaser.GameObjects.Image} */
+    #middleShadowCap;
+    /**@type {Phaser.GameObjects.Image} */
+    #rightShadowCap;
+
+    /**
+     * 
+     * @param {Phaser.Scene} scene 
+     * @param {number} x 
+     * @param {number} y 
+     */
+    constructor(scene, x, y, width = 360){
+        this.#scene = scene;
+        this.#fullWidth = width;
+        this.#scaleY = 0.7;
+
+        this.#healthBarContainer = this.#scene.add.container(x,y, []);
+        this.#createHealthBarShadowImages(x,y);
+        this.#createHealthBarImage(x,y)
+        this.#setMeterPercentage(1)
+    }
+
+    get container(){
+        return this.#healthBarContainer
+    }
+
+    //Funcion que crea la sombra de la barra de vida
+        /**
+         * 
+         * @param {number} x posicion x para poner la barra de vida
+         * @param {number} y posicion y para poner la barra de vida
+         * @returns {void}
+         */
+    #createHealthBarShadowImages(x,y){
+        this.#leftShadowCap = this.#scene.add
+            .image(x,y, HEALTH_BAR_ASSET_KEYS.LEFT_CAP_SHADOW)
+            .setOrigin(0,0.5)
+            .setScale(1,this.#scaleY)
+
+            this.#middleShadowCap = this.#scene.add
+            .image(this.#leftShadowCap.x + this.#leftShadowCap.width,y,HEALTH_BAR_ASSET_KEYS.MIDDLE_SHADOW)
+            .setOrigin(0,0.5)
+            this.#middleShadowCap.displayWidth = this.#fullWidth;
+
+            this.#rightShadowCap = this.#scene.add
+            .image(this.#middleShadowCap.x + this.#middleShadowCap.displayWidth,y,HEALTH_BAR_ASSET_KEYS.RIGHT_CAP_SHADOW)
+            .setOrigin(0,0.5)
+            .setScale(1,this.#scaleY)
+
+            this.#healthBarContainer.add([this.#leftShadowCap, this.#middleShadowCap, this.#rightShadowCap])
+    }
+
+
+    //Funcion que crea la barra de vida
+        /**
+         * 
+         * @param {number} x posicion x para poner la barra de vida
+         * @param {number} y posicion y para poner la barra de vida
+         * @returns {void}
+         */
+        #createHealthBarImage(x, y) {
+
+            this.#leftCap = this.#scene.add
+            .image(x,y, HEALTH_BAR_ASSET_KEYS.LEFT_CAP)
+            .setOrigin(0,0.5)
+            .setScale(1,this.#scaleY)
+
+            this.#middle = this.#scene.add
+            .image(this.#leftCap.x + this.#leftCap.width,y,HEALTH_BAR_ASSET_KEYS.MIDDLE)
+            .setOrigin(0,0.5)
+
+            this.#rightCap = this.#scene.add
+            .image(this.#middle.x + this.#middle.displayWidth,y,HEALTH_BAR_ASSET_KEYS.RIGHT_CAP)
+            .setOrigin(0,0.5)
+            .setScale(1,this.#scaleY)
+
+            this.#healthBarContainer.add([this.#leftCap, this.#middle, this.#rightCap])
+        }
+    
+        /**
+         * 
+         * @param {number} [percent = 1]  a number between 0 and 1 that is used for setting how filled the health bar
+         */
+    #setMeterPercentage(percent = 1){
+        const width = this.#fullWidth * percent;
+
+        this.#middle.displayWidth = width;
+        this.#rightCap.x = this.#middle.x + this.#middle.displayWidth;
+    }
+
+    /**
+     * 
+     * @param {*} percent 
+     * @param {*} options 
+     */
+    setMeterPercentageAnimated(percent, options){
+        const width = this.#fullWidth * percent;
+
+        this.#scene.tweens.add({
+            targets: this.#middle,
+            displayWidth: width,
+            duration: options?.duration || options?.duration === 0 ? 0 : 1000,
+            ease: Phaser.Math.Easing.Circular.Out,
+            onUpdate: () => {
+                this.#rightCap.x = this.#middle.x + this.#middle.displayWidth;
+                const isVisible = this.#middle.displayWidth > 0;
+                this.#leftCap.visible = isVisible
+                this.#middle.visible = isVisible
+                this.#rightCap.visible = isVisible
+            },
+            onComplete: options?.callback,
+
+        })
+    }
+}

@@ -1,0 +1,13 @@
+{
+  "name": "phaser-game-root",
+  "version": "1.0.0",
+  "description": "Monster Tamer - Phaser Game Dashboard",
+  "scripts": {
+    "start": "npx serve .",
+    "backend": "cd server && npm start",
+    "all": "concurrently \"npm start\" \"npm run backend\""
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}

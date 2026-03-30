@@ -1,0 +1,54 @@
+import Phaser from '../lib/phaser.js';
+import { DATA_ASSET_KEYS } from '../assets/asset-keys.js';
+
+export class DataUtils {
+    /**
+     * Utility function for retrieving an Attack object from the attacks.json data file
+     * @param {Phaser.Scene} scene the Phaser 3 Scene to get cached JSON file from
+     * @param {number} attackId the id of the attack to retrieve from the attack.json file
+     * @returns {import('../types/typedef.js').Attack | undefined}
+     */
+    static getMonsterAttack(scene, attackId){
+        /**@type {import('../types/typedef.js').Attack[]} */
+        const data = scene.cache.json.get(DATA_ASSET_KEYS.ATTACKS);
+        return data.find((attack) => attack.id === attackId);
+    }
+
+    /**
+     * Utility function for retrieving the animation objects from the animation file
+     * @param {Phaser.Scene} scene 
+     * @returns {import('../types/typedef.js').Animation[]}
+     */
+    static getAnimations(scene) {
+        /**@type {import('../types/typedef.js').Animation[]} */
+        const data = scene.cache.json.get(DATA_ASSET_KEYS.ANIMATIONS)
+        return data 
+    }
+
+
+/**
+   * Utility function for retrieving an Item object from the items.json data file.
+   * @param {Phaser.Scene} scene the Phaser 3 Scene to get cached JSON file from
+   * @param {number} itemId the id of the item to retrieve from the items.json file
+   * @returns {import('../types/typedef.js').Item | undefined}
+   */
+  static getItem(scene, itemId) {
+    /** @type {import('../types/typedef.js').Item[]} */
+    const data = scene.cache.json.get(DATA_ASSET_KEYS.ITEMS);
+    return data.find((item) => item.id === itemId);
+  }
+
+  /**
+   * Utility function for retrieving an array Item objects from the items.json data file.
+   * @param {Phaser.Scene} scene the Phaser 3 Scene to get cached JSON file from
+   * @param {number[]} itemIds the array of the item ids to retrieve from the items.json file
+   * @returns {import('../types/typedef.js').Item[] | undefined}
+   */
+  static getItems(scene, itemIds) {
+    /** @type {import('../types/typedef.js').Item[]} */
+    const data = scene.cache.json.get(DATA_ASSET_KEYS.ITEMS);
+    return data.filter((item) => {
+      return itemIds.some((id) => id === item.id);
+    });
+  }
+}

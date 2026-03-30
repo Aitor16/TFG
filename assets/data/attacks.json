@@ -1,0 +1,12 @@
+[
+    {
+        "id": 1,
+        "name": "slash",
+        "animationName": "SLASH"
+    },
+    {
+        "id": 2,
+        "name": "grenade",
+        "animationName": "GRENADE"
+    }
+]

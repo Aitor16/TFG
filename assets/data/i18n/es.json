@@ -1,0 +1,115 @@
+{
+  "BATTLE_MENU": {
+    "FIGHT": "LUCHA",
+    "SWITCH": "CAMBIO",
+    "ITEM": "OBJETO",
+    "FLEE": "HUIR",
+    "WHAT_SHOULD_DO": "¿Qué debería hacer",
+    "DO_NEXT": "ahora?",
+    "NO_ALLIES": "No tienes otros aliados en tu equipo",
+    "FAIL_FLEE": "No pudiste huir",
+    "USED_ITEM": "Has usado el siguiente objeto: {itemName}"
+  },
+  "OPTIONS_MENU": {
+    "TITLE": "AJUSTES",
+    "TEXT_SPEED": "VELOCIDAD TEXTO",
+    "BATTLE_SCENE": "ESCENAS DE BATALLA",
+    "BATTLE_STYLE": "ESTILO BATALLA",
+    "SOUND": "SONIDO",
+    "VOLUME": "VOLUMEN",
+    "RUST_PATTERN": "PATRÓN ÓXIDO",
+    "LANGUAGE": "IDIOMA",
+    "TEXT_SPEED_OPTIONS": {
+      "SLOW": "LENTO",
+      "MID": "MEDIO",
+      "FAST": "RÁPIDO"
+    },
+    "BATTLE_SCENE_OPTIONS": {
+      "ON": "ACT.",
+      "OFF": "DESACT."
+    },
+    "BATTLE_STYLE_OPTIONS": {
+      "SET": "FIJO",
+      "SHIFT": "CAMBIO"
+    },
+    "SOUND_OPTIONS": {
+      "ON": "ACT.",
+      "OFF": "DESACT."
+    },
+    "SURVIVE": "SOBREVIVIR",
+    "INFO": {
+      "TEXT_SPEED": "Elige una de las tres velocidades de visualización de texto. Las velocidades más rápidas te ayudan a sobrevivir más tiempo.",
+      "BATTLE_SCENE": "Elige si mostrar animaciones y efectos de batalla o no. Conserva energía en el yermo.",
+      "BATTLE_STYLE": "Elige si permitir que tu monstruo sea retirado entre rondas. Adáptate para sobrevivir.",
+      "SOUND": "Elige si activar o desactivar el sonido. El silencio puede ser tu aliado.",
+      "VOLUME": "Elige el volumen de la música y los efectos de sonido. Escucha el peligro que se acerca.",
+      "MENU_COLOR": "Elige uno de los tres patrones de óxido para tu interfaz.",
+      "LANGUAGE": "Selecciona tu idioma preferido para la interfaz del yermo.",
+      "CONFIRM": "Guarda tus cambios y regresa al yermo."
+    },
+    "LANGUAGE_OPTIONS": {
+      "ENGLISH": "INGLÉS",
+      "SPANISH": "ESPAÑOL"
+    }
+  },
+  "TITLE_MENU": {
+    "NEW_GAME": "NUEVA PARTIDA",
+    "CONTINUE": "CONTINUAR",
+    "OPTIONS": "OPCIONES",
+    "NEW_GAME_DESC": "Nuevo Viaje",
+    "CONTINUE_DESC": "Continuar Búsqueda",
+    "OPTIONS_DESC": "Ajustar Configuración",
+    "SUBTITLE": "SOBREVIVE. ADÁPTATE. PERMANECE."
+  },
+  "ATTACKS": {
+    "1": "Cuchillada",
+    "2": "Granada"
+  },
+  "ITEMS": {
+    "1": {
+      "NAME": "Poción",
+      "DESC": "Un objeto de curación básico. Cura 20 PS"
+    }
+  },
+  "INVENTORY": {
+    "TITLE": "Objetos",
+    "CANCEL": "Cancelar",
+    "CANCEL_DESC": "Cierra la bolsa y continúa con tu aventura"
+  },
+  "MONSTER_PARTY": {
+    "CANCEL": "CANCELAR",
+    "GO_BACK_PREVIOUS": "Volver al menú anterior",
+    "CHOOSE_MONSTER": "Elige un monstruo",
+    "CANNOT_HEAL_FAINTED": "No se puede curar a monstruos debilitados",
+    "ALREADY_FULL_HP": "El monstruo ya tiene los PS al máximo",
+    "HEALED_BY": "Se ha curado al monstruo {amount} PS"
+  },
+  "MONSTER_DETAILS": {
+    "TITLE": "Detalles del Monstruo"
+  },
+  "WORLD": {
+    "SAVE_SUCCESS": "El progreso del juego ha sido guardado",
+    "CANNOT_READ_SIGN": "No puedes leer el cartel desde esta dirección.",
+    "NPC_TIPS": "¡Asegúrate de hablar con los NPCs para obtener consejos útiles!",
+    "EXIT_CONFIRM": "¿Salir del juego? Se perderá el progreso no guardado."
+  },
+  "WORLD_MENU": {
+    "MONSTERS": "MONSTRUOS",
+    "BAG": "BOLSA",
+    "SAVE": "GUARDAR",
+    "EXIT": "SALIR",
+    "OPTIONS": "OPCIONES",
+    "MONSTERDEX": "MONSTERDEX",
+    "YES": "SÍ",
+    "NO": "NO"
+  },
+  "BATTLE": {
+    "PLAYER_USED_ATTACK": "¡{monster} usó {attack}!",
+    "ENEMY_USED_ATTACK": "¡{monster} usó {attack}!",
+    "ENEMY_FAINTED": "¡{monster} salvaje se ha debilitado! Has ganado experiencia.",
+    "PLAYER_FAINTED": "¡{monster} se ha debilitado! No te quedan más monstruos, escapando a salvo...",
+    "WILD_MONSTER_APPEARED": "¡Un {monster} salvaje emerge del yermo!",
+    "GO_MONSTER": "¡Adelante {monster}! ¡Lucha por tu supervivencia!",
+    "FLEE_SUCCESS": "¡Has escapado del horror del yermo!"
+  }
+}

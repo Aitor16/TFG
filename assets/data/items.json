@@ -1,0 +1,8 @@
+[
+    {
+        "id": 1,
+        "name": "Potion",
+        "description": "A basic healing item. Heals 20 HP",
+        "effect": "HEAL_20"
+    }
+]
