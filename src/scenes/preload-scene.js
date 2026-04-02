@@ -87,6 +87,11 @@ export class PreloadScene extends BaseScene {
             UI_ASSET_KEYS.CURSOR,
             `${uiPostFinemPath}/cursor.png`
         )
+        //WALKIE
+        this.load.image(
+            UI_ASSET_KEYS.MENU_WALKIE,
+            `${monsterTamerPath}/map/walkie.png`
+        )
         this.load.image(
             UI_ASSET_KEYS.CURSOR_WHITE,
             `${uiPostFinemPath}/cursor_white.png`
@@ -169,7 +174,7 @@ export class PreloadScene extends BaseScene {
         // ui components for title
         this.load.image(
             TITLE_ASSET_KEYS.BACKGROUND,
-            `${monsterTamerPath}/ui/title/background.png`
+            `${monsterTamerPath}/ui/title/menu.png`
         )
         this.load.image(
             TITLE_ASSET_KEYS.PANEL,
@@ -181,13 +186,21 @@ export class PreloadScene extends BaseScene {
         )
 
 
-        //ui components for monster party
+        //**
+        // ==========================================
+        //            ASSET DEL MONSTER PARTY      ||
+        // ==========================================
+        // */
         this.load.image(MONSTER_PARTY_ASSET_KEYS.PARTY_BACKGROUND, `${monsterTamerPath}/ui/monster-party/background.png`)
         this.load.image(MONSTER_PARTY_ASSET_KEYS.MONSTER_DETAILS_BACKGROUND, `${monsterTamerPath}/ui/monster-party/monster-details-background.png`)
 
-        //ui components for inventory
-        this.load.image(INVENTORY_ASSET_KEYS.INVENTORY_BACKGROUND, `${monsterTamerPath}/ui/inventory/bag_background.png`)
-        this.load.image(INVENTORY_ASSET_KEYS.INVENTORY_BAG, `${monsterTamerPath}/ui/inventory/bag.png`)
+        //**
+        // ==========================================
+        //               ASSET DEL INVENTARIO      ||
+        // ==========================================
+        // */
+        this.load.image(INVENTORY_ASSET_KEYS.INVENTORY_BACKGROUND, `${monsterTamerPath}/ui/inventory/inventario.png`)
+        //this.load.image(INVENTORY_ASSET_KEYS.INVENTORY_BAG, `${monsterTamerPath}/ui/inventory/bag.png`)
 
     }
 

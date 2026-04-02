@@ -34,6 +34,7 @@ export const HEALTH_BAR_ASSET_KEYS = Object.freeze({
 })
 
 export const UI_ASSET_KEYS = Object.freeze({
+    MENU_WALKIE: 'MENU_WALKIE',
     CURSOR: 'CURSOR',
     CURSOR_WHITE: 'CURSOR_WHITE',
     MENU_BACKGROUND: 'MENU_BACKGROUND',

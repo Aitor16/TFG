@@ -26,7 +26,7 @@ export const MENU_OPTIONS = Object.freeze({
 /** @type {Phaser.Types.GameObjects.Text.TextStyle} */
 const MENU_TEXT_STYLE = {
   fontFamily: KENNEY_FUTURE_NARROW_FONT_NAME,
-  color: '#FFFFFF',
+  color: '#000000',
   fontSize: '32px',
 };
 
@@ -39,8 +39,6 @@ export class Menu {
   #width;
   /** @type {number} */
   #height;
-  /** @type {Phaser.GameObjects.Graphics} */
-  #graphics;
   /** @type {Phaser.GameObjects.Container} */
   #container;
   /** @type {boolean} */
@@ -59,45 +57,70 @@ export class Menu {
   #menuItemHeight;
   /** @type {import('../../utils/i18n.js').I18n} */
   #i18n;
+  /** @type {Phaser.GameObjects.Image} */
+#walkieBackground;
 
-  /**
-   * @param {Phaser.Scene} scene
-   */
-  constructor(scene) {
-    this.#scene = scene;
-    this.#padding = 4;
-    this.#width = 300;
-    this.#availableMenuOptions = [MENU_OPTIONS.MONSTERS, MENU_OPTIONS.BAG, MENU_OPTIONS.SAVE, MENU_OPTIONS.OPTIONS, MENU_OPTIONS.EXIT];
-    this.#menuOptionsTextGameObjects = [];
-    this.#selectedMenuOptionIndex = 0;
-    this.#menuItemHeight = 50; // Altura constante para cada opción del menú
-    this.#i18n = i18n(this.#scene);
+ constructor(scene) {
+  this.#scene = scene;
+  this.#padding = 4;
+  this.#width = 300;
+  this.#availableMenuOptions = [
+    MENU_OPTIONS.MONSTERS, 
+    MENU_OPTIONS.BAG, 
+    MENU_OPTIONS.SAVE, 
+    MENU_OPTIONS.OPTIONS, 
+    MENU_OPTIONS.EXIT
+  ];
+  
+  this.#menuOptionsTextGameObjects = [];
+  this.#selectedMenuOptionIndex = 0;
+  this.#menuItemHeight = 50;
+  this.#i18n = i18n(this.#scene);
 
-    // calculate height based on currently available options
-    this.#height = 10 + this.#padding * 2 + this.#availableMenuOptions.length * this.#menuItemHeight;
+  // calculate height
+  this.#height = 10 + this.#padding * 2 + this.#availableMenuOptions.length * this.#menuItemHeight;
 
-    this.#graphics = this.#createGraphics();
-    this.#container = this.#scene.add.container(0, 0, [this.#graphics]);
+  // Contenedor principal
+  this.#container = this.#scene.add.container(0, 0);
 
-    // update menu container with menu options
-    for (let i = 0; i < this.#availableMenuOptions.length; i += 1) {
-      // CORREGIDO: Ajustamos la posición Y para que sea consistente
-      const y = this.#padding * 2 + i * this.#menuItemHeight;
-      const menuText = this.#i18n.t(`WORLD_MENU.${this.#availableMenuOptions[i]}`, { defaultValue: this.#availableMenuOptions[i] });
-      const textObj = this.#scene.add.text(40 + this.#padding, y, menuText, MENU_TEXT_STYLE);
-      this.#menuOptionsTextGameObjects.push(textObj);
-      this.#container.add(textObj);
-    }
+  // === FONDO WALKIE ===
+  this.#walkieBackground = this.#scene.add.image(-170, -9 0 , UI_ASSET_KEYS.MENU_WALKIE)
+    .setOrigin(0, 0)
+    .setAlpha(1)
 
-    // CORREGIDO: Posicionamos el cursor alineado con la primera opción
-    const cursorX = 20 + this.#padding;
-    const cursorY = this.#padding * 2 + 14; // Ajuste fino para centrar el cursor con el texto
-    this.#userInputCursor = this.#scene.add.image(cursorX, cursorY, UI_ASSET_KEYS.CURSOR_WHITE);
-    this.#userInputCursor.setScale(0.08);
-    this.#container.add(this.#userInputCursor);
 
-    this.hide();
+  // Opcional: ajusta la escala si la imagen es demasiado grande/pequeña
+  this.#walkieBackground.setScale(0.9 );
+
+  this.#container.add(this.#walkieBackground);
+
+   // === OPCIONES DEL MENÚ ===
+  for (let i = 0; i < this.#availableMenuOptions.length; i += 1) {
+    const y = this.#padding * 2 + i * this.#menuItemHeight + 125;   // ← sube este número si quieres más abajo
+    
+    const menuText = this.#i18n.t(`WORLD_MENU.${this.#availableMenuOptions[i]}`, { 
+      defaultValue: this.#availableMenuOptions[i] 
+    });
+    
+    const textObj = this.#scene.add.text(55, y, menuText, MENU_TEXT_STYLE)   // ← 55 = más a la izquierda
+      .setOrigin(0, 0.5);
+
+    this.#menuOptionsTextGameObjects.push(textObj);
+    this.#container.add(textObj);
   }
+
+  // === CURSOR ===
+  const cursorX = 40;
+  const cursorY = this.#padding * 2 + 25;   // posición de la primera opción
+
+  this.#userInputCursor = this.#scene.add.image(cursorX, cursorY, UI_ASSET_KEYS.CURSOR_WHITE)
+    .setScale(0.08)
+    .setOrigin(0.5, 0.5);
+
+  this.#container.add(this.#userInputCursor);
+
+  this.hide();
+}
 
   /** @type {boolean} */
   get isVisible() {
@@ -146,7 +169,7 @@ export class Menu {
     this.#moveMenuCursor(input);
   }
 
-  /**
+    /**
    * @param {MenuOptions[]} options
    * @returns {void}
    */
@@ -160,20 +183,18 @@ export class Menu {
 
     // Recalculate height
     this.#height = 10 + this.#padding * 2 + this.#availableMenuOptions.length * this.#menuItemHeight;
-    
-    // Redraw background
-    this.#graphics.clear();
-    const menuColor = this.#getMenuColorsFromDataManager();
-    this.#graphics.fillStyle(menuColor.main, 1);
-    this.#graphics.fillRect(1, 0, this.#width - 1, this.#height - 1);
-    this.#graphics.lineStyle(8, menuColor.border, 1);
-    this.#graphics.strokeRect(0, 0, this.#width, this.#height);
 
-    // Create new text objects
+    // === CREAR NUEVOS TEXTOS CON LA MISMA POSICIÓN QUE EN EL CONSTRUCTOR ===
     for (let i = 0; i < this.#availableMenuOptions.length; i += 1) {
-      const y = this.#padding * 2 + i * this.#menuItemHeight;
-      const menuText = this.#i18n.t(`WORLD_MENU.${this.#availableMenuOptions[i]}`, { defaultValue: this.#availableMenuOptions[i] });
-      const textObj = this.#scene.add.text(40 + this.#padding, y, menuText, MENU_TEXT_STYLE);
+      const y = this.#padding * 2 + i * this.#menuItemHeight + 125;   // ← mismo valor que en constructor
+      
+      const menuText = this.#i18n.t(`WORLD_MENU.${this.#availableMenuOptions[i]}`, { 
+        defaultValue: this.#availableMenuOptions[i] 
+      });
+      
+      const textObj = this.#scene.add.text(55, y, menuText, MENU_TEXT_STYLE)
+        .setOrigin(0, 0.5);
+
       this.#menuOptionsTextGameObjects.push(textObj);
       this.#container.add(textObj);
     }
@@ -195,11 +216,7 @@ export class Menu {
     return g;
   }
 
-  /**
-   * @param {import('../../common/direction.js').Direction} direction
-   * @returns {void}
-   */
-  #moveMenuCursor(direction) {
+    #moveMenuCursor(direction) {
     switch (direction) {
       case DIRECTION.UP:
         this.#selectedMenuOptionIndex -= 1;
@@ -219,13 +236,12 @@ export class Menu {
       case DIRECTION.NONE:
         break;
       default:
-        console.log(this.#selectedMenuOption)
         exhaustiveGuard(direction);
     }
 
-    // CORREGIDO: Usamos la misma fórmula que para posicionar los textos
-    const x = 20 + this.#padding;
-    const y = this.#padding * 2 + 14 + this.#selectedMenuOptionIndex * this.#menuItemHeight;
+    const x = 25;     // ← a la izquierda del texto
+    const y = this.#padding * 2 + 25 + this.#selectedMenuOptionIndex * this.#menuItemHeight + 100;  
+    // ↑↑↑ ajusta este +100 si hace falta (prueba +105 o +110)
 
     this.#userInputCursor.setPosition(x, y);
   }

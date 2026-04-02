@@ -10,6 +10,8 @@ import { BaseScene } from "./base-scene.js"
 import { SCENE_KEYS } from './scene-keys.js'
 import { i18n } from "../utils/i18n.js"
 
+
+//ESTILO DE TEXTO DEL MENU
 /** @type {Phaser.Types.GameObjects.Text.TextStyle} */
 export const MENU_TEXT_STYLE = Object.freeze({
     fontFamily: KENNEY_FUTURE_NARROW_FONT_NAME,
@@ -30,6 +32,7 @@ export const MENU_TEXT_STYLE = Object.freeze({
  * @typedef {keyof typeof MAIN_MENU_OPTIONS} MainMenuOptions
  */
 
+//OPCIONES DEL MENU
 /**@enum {MainMenuOptions} */
 const MAIN_MENU_OPTIONS = Object.freeze({
     NEW_GAME: 'NEW_GAME',
@@ -37,6 +40,7 @@ const MAIN_MENU_OPTIONS = Object.freeze({
     OPTIONS: 'OPTIONS'
 })
 
+//CREAMOS LA ESCENA
 export class TitleScene extends BaseScene {
     /**@type {MainMenuOptions} */
     #selectedMenuOptions;
@@ -86,6 +90,8 @@ export class TitleScene extends BaseScene {
         this.#selectedMenuOptions = MAIN_MENU_OPTIONS.NEW_GAME
         this.#isContinueButtonEnabled = dataManager.store.get(DATA_MANAGER_STORE_KEYS.GAME_STARTED) || false
 
+        
+
         // Fondo postapocalíptico
         this.#createApocalypticBackground()
 
@@ -134,8 +140,14 @@ export class TitleScene extends BaseScene {
         const width = this.scale.width;
         const height = this.scale.height;
 
+        // Fondo completo de la escena titulo
+        this.add.image(0, 0, TITLE_ASSET_KEYS.BACKGROUND)
+            .setOrigin(0)
+            .setDisplaySize(this.scale.width, this.scale.height);
+        
+
         // Gradiente de colores apocalípticos (óxido, sangre, tierra quemada)
-        const bgGraphics = this.add.graphics();
+        //const bgGraphics = this.add.graphics();
 
         // Colores postapocalípticos
         const colors = [
@@ -146,7 +158,7 @@ export class TitleScene extends BaseScene {
         ];
 
         let time = 0;
-        this.tweens.addCounter({
+        /*this.tweens.addCounter({
             from: 0,
             to: colors.length - 1,
             duration: 12000,
@@ -169,7 +181,7 @@ export class TitleScene extends BaseScene {
                 bgGraphics.fillStyle(Phaser.Display.Color.GetColor(r, g, b), 1);
                 bgGraphics.fillRect(0, 0, width, height);
             }
-        });
+        });*/
 
         // Añadir textura de ruido para dar sensación de suciedad
         const noiseTexture = this.#createNoiseTexture();
