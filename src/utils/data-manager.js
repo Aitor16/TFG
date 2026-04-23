@@ -69,8 +69,10 @@ const initialState = {
                 assetFrame: 0,
                 currentHP: 20,
                 maxHP: 20,
-                attackIDs: [2, 1],
+                attackIDs: [2, 1, 3, 1],
                 baseAttack: 8,
+                baseAccuracy: 100,
+                baseSpeed: 10,
                 level: 5,
                 scale: { party: 0.4, details: 1.0 },
                 flipX: true,
@@ -85,6 +87,8 @@ const initialState = {
                 maxHP: 25,
                 attackIDs: [2, 1, 1, 2],
                 baseAttack: 10,
+                baseAccuracy: 100,
+                baseSpeed: 5,
                 level: 5,
                 scale: { party: 0.6, details: 1.5 },
             },
@@ -247,6 +251,25 @@ class DataManager extends Phaser.Events.EventEmitter {
             }
         });
         return items;
+    }
+
+    /**
+     * @param {number} itemId
+     * @param {number} [quantity=1]
+     */
+    addItem(itemId, quantity = 1) {
+        /** @type {import('../types/typedef.js').Inventory} */
+        const inventory = this.#store.get(DATA_MANAGER_STORE_KEYS.INVENTORY);
+        const itemIndex = inventory.findIndex((item) => item.item.id === itemId);
+        if (itemIndex > -1) {
+            inventory[itemIndex].quantity += quantity;
+        } else {
+            inventory.push({
+                item: { id: itemId },
+                quantity: quantity
+            });
+        }
+        this.#store.set(DATA_MANAGER_STORE_KEYS.INVENTORY, inventory);
     }
 
     /**

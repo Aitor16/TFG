@@ -85,6 +85,7 @@ export class InventoryScene extends BaseScene {
 
     constructor() {
         super({ key: SCENE_KEYS.INVENTORY_SCENE });
+        this._musicKey = 'OPTIONS';
     }
 
     /**
@@ -101,7 +102,7 @@ export class InventoryScene extends BaseScene {
             textureManager: this.sys.textures,
             assetKeys: [UI_ASSET_KEYS.MENU_BACKGROUND],
         });
-        
+
 
         this.#i18n = i18n(this);
 
@@ -161,15 +162,15 @@ export class InventoryScene extends BaseScene {
 
         // === Crear los items del inventario ===
         this.#inventory.forEach((inventoryItem, index) => {
-            const itemName = this.#i18n.t(`ITEMS.${inventoryItem.item.id}.NAME`, { 
-                defaultValue: inventoryItem.item.name 
+            const itemName = this.#i18n.t(`ITEMS.${inventoryItem.item.id}.NAME`, {
+                defaultValue: inventoryItem.item.name
             });
 
             // Nombre del objeto
             const itemText = this.add.text(
-                INVENTORY_ITEM_POSITION.x, 
-                INVENTORY_ITEM_POSITION.y + index * INVENTORY_ITEM_POSITION.space, 
-                itemName, 
+                INVENTORY_ITEM_POSITION.x,
+                INVENTORY_ITEM_POSITION.y + index * INVENTORY_ITEM_POSITION.space,
+                itemName,
                 INVENTORY_TEXT_STYLE
             );
 
@@ -195,9 +196,9 @@ export class InventoryScene extends BaseScene {
 
         // Texto "Cancelar" al final de la lista
         const cancelText = this.add.text(
-            INVENTORY_ITEM_POSITION.x, 
-            INVENTORY_ITEM_POSITION.y + this.#inventory.length * INVENTORY_ITEM_POSITION.space, 
-            this.#i18n.t('INVENTORY.CANCEL'), 
+            INVENTORY_ITEM_POSITION.x,
+            INVENTORY_ITEM_POSITION.y + this.#inventory.length * INVENTORY_ITEM_POSITION.space,
+            this.#i18n.t('INVENTORY.CANCEL'),
             INVENTORY_TEXT_STYLE
         );
         container.add(cancelText);

@@ -62,8 +62,10 @@
     "SUBTITLE": "SURVIVE. ADAPT. ENDURE."
   },
   "ATTACKS": {
+    "0": "-",
     "1": "Slash",
-    "2": "Grenade"
+    "2": "Grenade",
+    "3": "Smoke Bomb"
   },
   "ITEMS": {
     "1": {
@@ -91,7 +93,18 @@
     "SAVE_SUCCESS": "Game progress has been saved",
     "CANNOT_READ_SIGN": "You cannot read the sign from this direction.",
     "NPC_TIPS": "Make sure you talk to npcs for helpful tips!",
-    "EXIT_CONFIRM": "Progress will be lost. Exit anyway?"
+    "EXIT_CONFIRM": "Progress will be lost. Exit anyway?",
+    "SIGNPOSTS": {
+      "FAN_CLUB": "MONSTER FAN CLUB\nAll Monster fans welcome!",
+      "MAP": "Don't leave home without a MAP!",
+      "TIPS": "TRAINER TIPS\nIf you want to avoid battles, stay away from grassy areas!",
+      "POISON": "For poison, use ANTIDOTE! Get it at the MARKET!"
+    },
+    "NPCS": {
+      "TIPS": "Make sure you read the signposts for helpful tips!",
+      "SAVE_GAME_1": "You can save your game from the menu.",
+      "SAVE_GAME_2": "To open the menu, press the ENTER key."
+    }
   },
   "WORLD_MENU": {
     "MONSTERS": "MONSTERS",
@@ -106,10 +119,14 @@
   "BATTLE": {
     "PLAYER_USED_ATTACK": "{monster} used {attack}",
     "ENEMY_USED_ATTACK": "{monster} used {attack}",
+    "ATTACK_MISSED": "{monster}'s attack missed!",
     "ENEMY_FAINTED": "Wild {monster} fainted, You have gained some experience",
     "PLAYER_FAINTED": "{monster} fainted, You have no more monsters, escaping to safety...",
     "WILD_MONSTER_APPEARED": "A wild {monster} emerges from the wasteland!",
     "GO_MONSTER": "Go {monster}! Fight for survival!",
-    "FLEE_SUCCESS": "You escaped from the wasteland horror!"
+    "FLEE_SUCCESS": "You escaped from the wasteland horror!",
+    "SUNNY_WEATHER_DAMAGE": "The scorching sun damages all monsters...",
+    "ACCURACY_LOWERED": "{monster}'s accuracy fell!",
+    "GOT_ITEM": "You got a {itemName}!"
   }
 }

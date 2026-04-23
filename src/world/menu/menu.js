@@ -84,7 +84,7 @@ export class Menu {
   this.#container = this.#scene.add.container(0, 0);
 
   // === FONDO WALKIE ===
-  this.#walkieBackground = this.#scene.add.image(-170, -9 0 , UI_ASSET_KEYS.MENU_WALKIE)
+  this.#walkieBackground = this.#scene.add.image(-170, -90 , UI_ASSET_KEYS.MENU_WALKIE)
     .setOrigin(0, 0)
     .setAlpha(1)
 

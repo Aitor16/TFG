@@ -54,6 +54,7 @@ export class OptionsScene extends BaseScene {
         super({
             key: SCENE_KEYS.OPTION_SCENE,
         })
+        this._musicKey = 'OPTIONS';
     }
 
     /**@type {Phaser.GameObjects.Container} */
@@ -124,10 +125,10 @@ export class OptionsScene extends BaseScene {
 
     /**@type {Phaser.GameObjects.Graphics} */
     #rustOverlay;
-    
+
     /**@type {Phaser.GameObjects.Container} */
     #dustContainer;
-    
+
     /**@type {Phaser.Time.TimerEvent} */
     #dustTimer;
 
@@ -162,10 +163,10 @@ export class OptionsScene extends BaseScene {
 
         // Fondo apocalíptico
         this.#createApocalypticBackground();
-        
+
         // Polvo y ceniza
         this.#createDustAndAsh();
-        
+
         // Grietas decorativas
         this.#createRustyCracks();
 
@@ -175,7 +176,7 @@ export class OptionsScene extends BaseScene {
         //main options container
         this.#mainContainer = this.#nineSliceMainContainer.createNineSliceContainer(this, optionMenuWidth, 500, UI_ASSET_KEYS.MENU_BACKGROUND)
         this.#mainContainer.setX(100).setY(20);
-        
+
         // Añadir remaches al contenedor principal
         this.#addRivetsToContainer(this.#mainContainer, optionMenuWidth, 500);
 
@@ -208,7 +209,7 @@ export class OptionsScene extends BaseScene {
             const x = menuOptionsPosition.x;
             const y = menuOptionsPosition.yStart + menuOptionsPosition.yIncrement * index;
             const textGameObject = this.add.text(x, y, option, OPTIONS_TEXT_STYLE);
-            
+
             // Efecto hover
             textGameObject.setInteractive({ useHandCursor: true });
             textGameObject.on('pointerover', () => {
@@ -219,7 +220,7 @@ export class OptionsScene extends BaseScene {
                 textGameObject.setColor(TEXT_FONT_COLOR.NOT_SELECTED);
                 textGameObject.setScale(1);
             });
-            
+
             this.#mainContainer.add(textGameObject)
         });
 
@@ -256,14 +257,14 @@ export class OptionsScene extends BaseScene {
         const volumeTrack = this.add.rectangle(420, 293, 300, 6, 0x4a2a1a, 1).setOrigin(0, 0.5);
         volumeTrack.setStrokeStyle(2, 0xcd7a32, 0.5);
         this.#mainContainer.add(volumeTrack);
-        
+
         this.#volumeOptionsMenuCursor = this.add.rectangle(710, 293, 12, 30, 0xffaa66, 1).setOrigin(0, 0.5);
         this.#volumeOptionsMenuCursor.setStrokeStyle(2, 0xcd7a32, 0.8);
         this.#mainContainer.add(this.#volumeOptionsMenuCursor);
-        
+
         this.#volumeOptionsValueText = this.#createRustedOptionText(760, 273, '100%');
         this.#mainContainer.add(this.#volumeOptionsValueText);
-        
+
         //frame options con estilo oxidado
         this.#selectedMenuColorTextGameObject = this.#createRustedOptionText(595, 325, '');
         this.#selectedMenuColorTextGameObject.setOrigin(0.5, 0).setFontSize('32px');
@@ -275,7 +276,7 @@ export class OptionsScene extends BaseScene {
             this.#createRustedOptionText(620, 377, this.#i18n.t('OPTIONS_MENU.LANGUAGE_OPTIONS.SPANISH')),
         ]);
         this.#mainContainer.add(this.#languageOptionTextGameObjects.getChildren());
-        
+
         // Flechas decorativas oxidadas
         const leftArrow = this.add.image(530, 328, UI_ASSET_KEYS.CURSOR_WHITE).setOrigin(1, 0).setScale(0.1).setFlipX(true);
         const rightArrow = this.add.image(660, 328, UI_ASSET_KEYS.CURSOR_WHITE).setOrigin(0, 0).setScale(0.1);
@@ -295,7 +296,7 @@ export class OptionsScene extends BaseScene {
         this.#infoContainer = this.#nineSliceMainContainer.createNineSliceContainer(this, optionMenuWidth, 120, UI_ASSET_KEYS.MENU_BACKGROUND);
         this.#infoContainer.setX(100).setY(height - 130);
         this.#addRivetsToContainer(this.#infoContainer, optionMenuWidth, 120);
-        
+
         this.#selectedOptionInfoMsgTextGameObject = this.add.text(width / 2, height - 70, this.#i18n.t('OPTIONS_MENU.INFO.TEXT_SPEED'), {
             ...OPTIONS_TEXT_STYLE,
             fontSize: '20px',
@@ -305,7 +306,7 @@ export class OptionsScene extends BaseScene {
 
         // Cursor de selección estilo oxidado
         this.#optionsMenuCursor = this.add.rectangle(115, 80, optionMenuWidth - 30, 45, 0xffaa66, 0).setOrigin(0).setStrokeStyle(3, 0xffaa66, 0.8);
-        
+
         // Animación de pulso para el cursor
         this.tweens.add({
             targets: this.#optionsMenuCursor,
@@ -329,7 +330,7 @@ export class OptionsScene extends BaseScene {
         this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, () => {
             this.scene.start(this.#previousSceneName);
         })
-        
+
         // Animación de entrada
         this.cameras.main.setAlpha(0);
         this.tweens.add({
@@ -339,63 +340,63 @@ export class OptionsScene extends BaseScene {
             ease: 'Cubic.easeInOut'
         });
     }
-    
+
     #createApocalypticBackground() {
         const width = this.scale.width;
         const height = this.scale.height;
-        
+
         const bgGraphics = this.add.graphics();
-        
+
         // Gradiente apocalíptico
         bgGraphics.fillGradientStyle(0x2a1a15, 0x3a2a1a, 0x2a1a15, 0x3a2a1a, 1);
         bgGraphics.fillRect(0, 0, width, height);
-        
+
         // Textura de ruido
         const noiseTexture = this.#createNoiseTexture();
         const noiseOverlay = this.add.image(0, 0, noiseTexture).setOrigin(0).setAlpha(0.15);
         noiseOverlay.setDisplaySize(width, height);
-        
+
         // Siluetas de ruinas
         const ruinsGraphics = this.add.graphics();
         ruinsGraphics.fillStyle(0x1a0f0a, 0.3);
-        
-        for(let i = 0; i < 12; i++) {
+
+        for (let i = 0; i < 12; i++) {
             const x = i * 90 + Math.random() * 30;
             const y = height - (Math.random() * 100 + 50);
             ruinsGraphics.fillRect(x, y, 35, height - y);
         }
     }
-    
+
     #createNoiseTexture() {
         const textureKey = 'options_noise_texture';
-        
+
         if (!this.textures.exists(textureKey)) {
             const canvas = document.createElement('canvas');
             canvas.width = 512;
             canvas.height = 512;
             const ctx = canvas.getContext('2d');
-            
-            for(let i = 0; i < canvas.width; i++) {
-                for(let j = 0; j < canvas.height; j++) {
+
+            for (let i = 0; i < canvas.width; i++) {
+                for (let j = 0; j < canvas.height; j++) {
                     const value = Math.random() * 100;
                     ctx.fillStyle = `rgba(${value + 50}, ${value + 30}, ${value + 20}, ${Math.random() * 0.2})`;
                     ctx.fillRect(i, j, 1, 1);
                 }
             }
-            
+
             this.textures.addCanvas(textureKey, canvas);
         }
-        
+
         return textureKey;
     }
-    
+
     #createDustAndAsh() {
         this.#dustContainer = this.add.container();
         const width = this.scale.width;
         const height = this.scale.height;
-        
+
         // Polvo flotante
-        for(let i = 0; i < 80; i++) {
+        for (let i = 0; i < 80; i++) {
             const dust = this.add.circle(
                 Math.random() * width,
                 Math.random() * height,
@@ -403,7 +404,7 @@ export class OptionsScene extends BaseScene {
                 0x8b5a2b,
                 Math.random() * 0.3 + 0.1
             );
-            
+
             this.tweens.add({
                 targets: dust,
                 y: dust.y - (Math.random() * 150 + 50),
@@ -417,39 +418,39 @@ export class OptionsScene extends BaseScene {
                     dust.setAlpha(Math.random() * 0.3 + 0.1);
                 }
             });
-            
+
             this.#dustContainer.add(dust);
         }
     }
-    
+
     #createRustyCracks() {
         const crackGraphics = this.add.graphics();
         const width = this.scale.width;
         const height = this.scale.height;
-        
+
         crackGraphics.lineStyle(2, 0x6a3a1a, 0.4);
-        
-        for(let i = 0; i < 20; i++) {
+
+        for (let i = 0; i < 20; i++) {
             const startX = Math.random() * width;
             const startY = Math.random() * height;
-            
+
             crackGraphics.beginPath();
             crackGraphics.moveTo(startX, startY);
-            
+
             let currentX = startX;
             let currentY = startY;
-            
-            for(let j = 0; j < 4; j++) {
+
+            for (let j = 0; j < 4; j++) {
                 currentX += (Math.random() - 0.5) * 30;
                 currentY += Math.random() * 25;
                 crackGraphics.lineTo(currentX, currentY);
             }
-            
+
             crackGraphics.strokePath();
         }
-        
+
         // Manchas de óxido
-        for(let i = 0; i < 50; i++) {
+        for (let i = 0; i < 50; i++) {
             crackGraphics.fillStyle(0x8b4513, Math.random() * 0.25);
             crackGraphics.fillCircle(
                 Math.random() * width,
@@ -458,38 +459,38 @@ export class OptionsScene extends BaseScene {
             );
         }
     }
-    
+
     #createRustedOptionText(x, y, text) {
         const textObj = this.add.text(x, y, text, OPTIONS_TEXT_STYLE);
         textObj.setInteractive({ useHandCursor: true });
-        
+
         textObj.on('pointerover', () => {
             textObj.setColor(TEXT_FONT_COLOR.HOVER);
             textObj.setScale(1.05);
         });
-        
+
         textObj.on('pointerout', () => {
             textObj.setColor(TEXT_FONT_COLOR.NOT_SELECTED);
             textObj.setScale(1);
         });
-        
+
         return textObj;
     }
-    
+
     #addRivetsToContainer(container, width, height) {
         const rivetGraphics = this.add.graphics();
         const rivetPositions = [
             [20, 20], [width - 20, 20],
             [20, height - 20], [width - 20, height - 20]
         ];
-        
+
         rivetPositions.forEach(pos => {
             rivetGraphics.fillStyle(0x8b5a2b, 1);
             rivetGraphics.fillCircle(pos[0], pos[1], 6);
             rivetGraphics.fillStyle(0xcd7a32, 0.8);
             rivetGraphics.fillCircle(pos[0], pos[1], 4);
         });
-        
+
         container.add(rivetGraphics);
     }
 
@@ -574,7 +575,7 @@ export class OptionsScene extends BaseScene {
                 exhaustiveGuard(this.#selectedOptionMenu)
         }
         this.#selectedOptionInfoMsgTextGameObject.setText(this.#i18n.t(`OPTIONS_MENU.INFO.${this.#selectedOptionMenu}`))
-        
+
         // Pequeño temblor al cambiar selección
         this.cameras.main.shake(30, 0.002);
     }
@@ -1119,15 +1120,15 @@ export class OptionsScene extends BaseScene {
 
         exhaustiveGuard(this.#selectedLanguageOption)
     }
-    
+
     handleSceneCleanup() {
         super.handleSceneCleanup();
-        
-        if(this.#dustTimer) {
+
+        if (this.#dustTimer) {
             this.#dustTimer.remove();
         }
-        
-        if(this.#dustContainer) {
+
+        if (this.#dustContainer) {
             this.#dustContainer.destroy();
         }
     }

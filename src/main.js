@@ -9,6 +9,7 @@ import { SCENE_KEYS } from './scenes/scene-keys.js';
 import { TestScene } from './scenes/test-scene.js';
 import { TitleScene } from './scenes/title-scenes.js';
 import { WorldScene } from './scenes/world-scene.js';
+import { NPCInteractionScene } from './scenes/npc-interaction-scene.js';
 
 //Instancia el juego con las configuraciones
 const game = new Phaser.Game({
@@ -41,4 +42,5 @@ game.scene.add(SCENE_KEYS.TEST_SCENE, TestScene)
 game.scene.add(SCENE_KEYS.MONSTER_PARTY_SCENE, MonsterPartyScene)
 game.scene.add(SCENE_KEYS.MONSTER_DETAILS_SCENE, MonsterDetailsScene)
 game.scene.add(SCENE_KEYS.INVENTORY_SCENE, InventoryScene)
+game.scene.add(SCENE_KEYS.NPC_DIALOG_SCENE, NPCInteractionScene)
 game.scene.start(SCENE_KEYS.PRELOAD_SCENE, PreloadScene)

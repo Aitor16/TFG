@@ -62,8 +62,10 @@
     "SUBTITLE": "SOBREVIVE. ADÁPTATE. PERMANECE."
   },
   "ATTACKS": {
+    "0": "-",
     "1": "Cuchillada",
-    "2": "Granada"
+    "2": "Granada",
+    "3": "Bomba de Humo"
   },
   "ITEMS": {
     "1": {
@@ -91,7 +93,18 @@
     "SAVE_SUCCESS": "El progreso del juego ha sido guardado",
     "CANNOT_READ_SIGN": "No puedes leer el cartel desde esta dirección.",
     "NPC_TIPS": "¡Asegúrate de hablar con los NPCs para obtener consejos útiles!",
-    "EXIT_CONFIRM": "¿Salir del juego? Se perderá el progreso no guardado."
+    "EXIT_CONFIRM": "¿Salir del juego? Se perderá el progreso no guardado.",
+    "SIGNPOSTS": {
+      "FAN_CLUB": "CLUB DE FANS DE MONSTRUOS\n¡Bienvenidos todos los fans de los monstruos!",
+      "MAP": "¡No salgas de casa sin un MAPA!",
+      "TIPS": "CONSEJOS PARA ENTRENADORES\n¡Si quieres evitar batallas, aléjate de las zonas de hierba!",
+      "POISON": "¡Para el veneno, usa ANTÍDOTO! ¡Cómpralo en el MERCADO!"
+    },
+    "NPCS": {
+      "TIPS": "¡Asegúrate de leer los carteles para obtener consejos útiles!",
+      "SAVE_GAME_1": "Puedes guardar tu partida desde el menú.",
+      "SAVE_GAME_2": "Para abrir el menú, presiona la tecla ENTER."
+    }
   },
   "WORLD_MENU": {
     "MONSTERS": "MONSTRUOS",
@@ -106,10 +119,14 @@
   "BATTLE": {
     "PLAYER_USED_ATTACK": "¡{monster} usó {attack}!",
     "ENEMY_USED_ATTACK": "¡{monster} usó {attack}!",
+    "ATTACK_MISSED": "¡{monster} ha fallado su ataque!",
     "ENEMY_FAINTED": "¡{monster} salvaje se ha debilitado! Has ganado experiencia.",
-    "PLAYER_FAINTED": "¡{monster} se ha debilitado! No te quedan más monstruos, escapando a salvo...",
+    "PLAYER_FAINTED": "¡Tu monstruo se ha debilitado! Huyendo a salvo...",
     "WILD_MONSTER_APPEARED": "¡Un {monster} salvaje emerge del yermo!",
     "GO_MONSTER": "¡Adelante {monster}! ¡Lucha por tu supervivencia!",
-    "FLEE_SUCCESS": "¡Has escapado del horror del yermo!"
+    "FLEE_SUCCESS": "¡Has escapado del horror del yermo!",
+    "SUNNY_WEATHER_DAMAGE": "El sol abrasador daña a todos los monstruos...",
+    "ACCURACY_LOWERED": "¡La precisión de {monster} ha bajado!",
+    "GOT_ITEM": "¡Has obtenido un/a {itemName}!"
   }
 }

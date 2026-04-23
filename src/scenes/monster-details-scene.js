@@ -26,34 +26,35 @@ export class MonsterDetailsScene extends BaseScene {
     #monsterAttacks
     /** @type {import('../utils/i18n.js').I18n} */
     #i18n;
-    constructor(){
+    constructor() {
         super({
             key: SCENE_KEYS.MONSTER_DETAILS_SCENE
         })
+        this._musicKey = 'OPTIONS';
     }
 
-    init(data){
+    init(data) {
         super.init(data)
 
         this.#monsterDetails = data.monster
-        if(this.#monsterDetails === undefined){
+        if (this.#monsterDetails === undefined) {
             this.#monsterDetails = dataManager.store.get(DATA_MANAGER_STORE_KEYS.MONSTER_IN_PARTY)[0]
         }
         this.#monsterAttacks = [];
         this.#monsterDetails.attackIDs.forEach((attackId) => {
-            const monsterAttack = DataUtils.getMonsterAttack(this,attackId)
-            if(monsterAttack !== undefined){
+            const monsterAttack = DataUtils.getMonsterAttack(this, attackId)
+            if (monsterAttack !== undefined) {
                 this.#monsterAttacks.push(monsterAttack)
             }
         })
         this.#i18n = i18n(this);
     }
 
-    create(){
+    create() {
         super.create()
 
         //create main background and tittle
-        this.add.image(0,0, MONSTER_PARTY_ASSET_KEYS.MONSTER_DETAILS_BACKGROUND).setOrigin(0).setScale(1.88,1.88)
+        this.add.image(0, 0, MONSTER_PARTY_ASSET_KEYS.MONSTER_DETAILS_BACKGROUND).setOrigin(0).setScale(1.88, 1.88)
         this.add.text(20, 10, this.#i18n.t('MONSTER_DETAILS.TITLE'), {
             ...UI_TEXT_STYLE,
             fontSize: '72px',
@@ -71,7 +72,7 @@ export class MonsterDetailsScene extends BaseScene {
 
         this.add.image(500, 480, this.#monsterDetails.assetKey).setOrigin(0.5, 0.5).setScale(this.#monsterDetails.scale?.details || 1.5).setFlipX(!!this.#monsterDetails.flipX)
 
-        if(this.#monsterAttacks[0] !== undefined){
+        if (this.#monsterAttacks[0] !== undefined) {
             const attackName = this.#i18n.t(`ATTACKS.${this.#monsterAttacks[0].id}`, { defaultValue: this.#monsterAttacks[0].name });
             this.add.text(1050, 155, attackName, {
                 ...MONSTER_MOVE_TEXT_STYLE,
@@ -79,7 +80,7 @@ export class MonsterDetailsScene extends BaseScene {
             })
         }
 
-        if(this.#monsterAttacks[1] !== undefined){
+        if (this.#monsterAttacks[1] !== undefined) {
             const attackName = this.#i18n.t(`ATTACKS.${this.#monsterAttacks[1].id}`, { defaultValue: this.#monsterAttacks[1].name });
             this.add.text(1050, 305, attackName, {
                 ...MONSTER_MOVE_TEXT_STYLE,
@@ -87,7 +88,7 @@ export class MonsterDetailsScene extends BaseScene {
             })
         }
 
-        if(this.#monsterAttacks[2] !== undefined){
+        if (this.#monsterAttacks[2] !== undefined) {
             const attackName = this.#i18n.t(`ATTACKS.${this.#monsterAttacks[2].id}`, { defaultValue: this.#monsterAttacks[2].name });
             this.add.text(1050, 455, attackName, {
                 ...MONSTER_MOVE_TEXT_STYLE,
@@ -95,7 +96,7 @@ export class MonsterDetailsScene extends BaseScene {
             })
         }
 
-        if(this.#monsterAttacks[3] !== undefined){
+        if (this.#monsterAttacks[3] !== undefined) {
             const attackName = this.#i18n.t(`ATTACKS.${this.#monsterAttacks[3].id}`, { defaultValue: this.#monsterAttacks[3].name });
             this.add.text(1050, 605, attackName, {
                 ...MONSTER_MOVE_TEXT_STYLE,
@@ -105,24 +106,24 @@ export class MonsterDetailsScene extends BaseScene {
     }
 
     update() {
-            super.update()
+        super.update()
 
-            if(this._controls.isInputLocked){
-                return
-            }
-
-            if(this._controls.wasBackKeyPressed()){
-                this.#goBackToPreviousScene()
-                return;
-            }
-
-            if(this._controls.wasSpaceKeyPressed()){
-                this.#goBackToPreviousScene()
-                return;
-            }
+        if (this._controls.isInputLocked) {
+            return
         }
 
-        #goBackToPreviousScene(){
+        if (this._controls.wasBackKeyPressed()) {
+            this.#goBackToPreviousScene()
+            return;
+        }
+
+        if (this._controls.wasSpaceKeyPressed()) {
+            this.#goBackToPreviousScene()
+            return;
+        }
+    }
+
+    #goBackToPreviousScene() {
         //
         this._controls.lockInput = true;
         this.scene.stop(SCENE_KEYS.MONSTER_DETAILS_SCENE)

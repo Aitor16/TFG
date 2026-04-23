@@ -28,6 +28,7 @@ const BATTLE_STATES = Object.freeze({
     POST_ATTACK_CHECK: 'POST_ATTACK_CHECK',
     FINISHED: 'FINISHED',
     FLEE_ATTEMPT: 'FLEE_ATTEMPT',
+    RECHECK: 'RECHECK',
 })
 
 //Exporta la clase PreloadScene donde se crea una clase escena heredando todas las funciones y propiedades de PhaserScenas
@@ -57,6 +58,8 @@ export class BattleScene extends BaseScene {
     #vignetteEffect;
     /**@type {Phaser.Time.TimerEvent} */
     #dustTimer;
+    /**@type {Phaser.GameObjects.Rectangle} */
+    #sunnyWeatherOverlay;
 
     //Constructor de la escena principal con la KEY y log
     constructor() {
@@ -64,6 +67,7 @@ export class BattleScene extends BaseScene {
             key: SCENE_KEYS.BATTLE_SCENE,
             //active: true
         })
+        this._musicKey = 'BATTLE';
         console.log(`[${BattleScene.name}: constructor] invoked`)
     }
 
@@ -113,6 +117,8 @@ export class BattleScene extends BaseScene {
                 maxHP: 25,
                 attackIDs: [1],
                 baseAttack: 5,
+                baseAccuracy: 100,
+                baseSpeed: 7,
                 level: 5,
             },
             skipBattleAnimations: this.#skipAnimations,
@@ -133,6 +139,9 @@ export class BattleScene extends BaseScene {
         this.#battleMenu = new BattleMenu(this, this.#activePlayerMonster, this.#skipAnimations);
         this.#createBattleStateMachine();
         this.#attackManager = new AttackManager(this, this.#skipAnimations)
+
+        // Crear efecto de clima de sol
+        this.#createSunnyWeatherEffect();
 
         //Crea los cursores
         this._controls.lockInput = true;
@@ -291,6 +300,31 @@ export class BattleScene extends BaseScene {
         });
     }
 
+    #createSunnyWeatherEffect() {
+        const width = this.scale.width;
+        const height = this.scale.height;
+
+        // Overlay amarillo para el sol - Más notable
+        this.#sunnyWeatherOverlay = this.add.rectangle(0, 0, width, height, 0xffcc00, 0.25);
+        this.#sunnyWeatherOverlay.setOrigin(0);
+        this.#sunnyWeatherOverlay.setDepth(100); // Encima de los monstruos para que sea más notable
+        this.#sunnyWeatherOverlay.setAlpha(0);
+    }
+
+    #flashSunnyWeather(callback) {
+        this.tweens.add({
+            targets: this.#sunnyWeatherOverlay,
+            alpha: 0.6,
+            duration: 300,
+            yoyo: true,
+            repeat: 2,
+            ease: 'Sine.easeInOut',
+            onComplete: () => {
+                if (callback) callback();
+            }
+        });
+    }
+
     #applyPostApocalypticFilter(gameObject) {
         // Aplicar tintes oscuros a los monstruos para dar sensación de desgaste
         if (gameObject && gameObject.setTint) {
@@ -312,10 +346,12 @@ export class BattleScene extends BaseScene {
 
         //limit input based on the current battle state we are in
         //if we are not in the right battle state, return early and do not process input
-        if (wasSpaceKeyPressed && (this.#battleStateMachine.currentStateName === BATTLE_STATES.PRE_BATTLE_INFO) ||/* (
-            this.#battleStateMachine.currentStateName === BATTLE_STATES.POST_ATTACK_CHECK) ||*/ (
-                this.#battleStateMachine.currentStateName === BATTLE_STATES.FLEE_ATTEMPT)
-        ) {
+        if (wasSpaceKeyPressed && (
+            this.#battleStateMachine.currentStateName === BATTLE_STATES.PRE_BATTLE_INFO ||
+            this.#battleStateMachine.currentStateName === BATTLE_STATES.FLEE_ATTEMPT ||
+            (this.#battleStateMachine.currentStateName === BATTLE_STATES.BATTLE && this.#battleMenu.isWaitingForInput) ||
+            (this.#battleStateMachine.currentStateName === BATTLE_STATES.POST_ATTACK_CHECK && this.#battleMenu.isWaitingForInput)
+        )) {
             this.#battleMenu.handlePlayerInput('OK');
             return;
         }
@@ -329,6 +365,12 @@ export class BattleScene extends BaseScene {
 
             if (this.#battleMenu.wasItemUsed) {
                 this.#battleStateMachine.setState(BATTLE_STATES.ENEMY_INPUT)
+                return;
+            }
+
+            if (this.#battleMenu.wasFleeSelected) {
+                console.log('HUIDA DETECTADA EN BATTLE SCENE');
+                this.#battleStateMachine.setState(BATTLE_STATES.FLEE_ATTEMPT)
                 return;
             }
 
@@ -362,36 +404,69 @@ export class BattleScene extends BaseScene {
     }
 
     //EJECUTA UN ATAQUE DE UN JUGADOR
-    #playerAttack() {
-        console.log('JUGADOR VA A ATACAR')
+    #playerAttack(callback) {
+        if (this.#activePlayerAttackIndex === -1) {
+            if (callback) callback();
+            return;
+        }
 
-        // Efecto de temblor al atacar
-        this.cameras.main.shake(100, 0.005);
+        const attack = this.#activePlayerMonster.attacks[this.#activePlayerAttackIndex];
+        console.log(`JUGADOR VA A USAR: ${attack.name}`);
+
+        // Comprobar precisión
+        const hitChance = this.#activePlayerMonster.currentAccuracy;
+        const randomRoll = Math.random() * 100;
+        const isHit = randomRoll < hitChance;
 
         this.#battleMenu.updateInfoPaneMessageNoInputRequired(
             this.#i18n.t('BATTLE.PLAYER_USED_ATTACK', {
                 monster: this.#activePlayerMonster.name,
-                attack: this.#i18n.t(`ATTACKS.${this.#activePlayerMonster.attacks[this.#activePlayerAttackIndex].id}`),
+                attack: this.#i18n.t(`ATTACKS.${attack.id}`),
             }),
             () => {
                 this.time.delayedCall(500, () => {
-                    this.#attackManager.playAttackAnimation(this.#activePlayerMonster.attacks[this.#activePlayerAttackIndex].animationName, ATTACK_TARGET.ENEMY, () => {
-                        this.#activeEnemyMonster.playTakeDamageAnimation(() => {
-                            this.#activeEnemyMonster.takeDamage(this.#activePlayerMonster.baseAttack, () => {
-                                // Efecto de sangre/óxido al dañar
-                                this.#createDamageEffect(this.#activeEnemyMonster);
+                    if (!isHit) {
+                        // Falló el ataque
+                        this.#battleMenu.updateInfoPaneMessagesWaitForInput(
+                            [this.#i18n.t('BATTLE.ATTACK_MISSED', { monster: this.#activePlayerMonster.name })],
+                            () => {
+                                if (callback) callback();
+                            }
+                        );
+                        return;
+                    }
 
-                                if (!this.#activeEnemyMonster.isFainted) {
-                                    this.#enemyAttack();
-                                } else {
-                                    this.#battleStateMachine.setState(BATTLE_STATES.POST_ATTACK_CHECK);
-                                }
+                    this.#attackManager.playAttackAnimation(attack.animationName, ATTACK_TARGET.ENEMY, () => {
+                        // Aplicar daño si tiene
+                        if (attack.damage > 0) {
+                            this.#activeEnemyMonster.playTakeDamageAnimation(() => {
+                                this.#activeEnemyMonster.takeDamage(attack.damage, () => {
+                                    // Efecto de sangre/óxido al dañar
+                                    this.#createDamageEffect(this.#activeEnemyMonster);
+                                    this.#handleAttackEffect(attack, this.#activeEnemyMonster, callback);
+                                })
                             })
-                        })
+                        } else {
+                            // Si no tiene daño, procesar efecto directamente
+                            this.#handleAttackEffect(attack, this.#activeEnemyMonster, callback);
+                        }
                     })
-
                 })
             })
+    }
+
+    #handleAttackEffect(attack, target, callback) {
+        if (attack.effect === 'LOWER_ACCURACY_15') {
+            target.reduceAccuracy(15);
+            this.#battleMenu.updateInfoPaneMessagesWaitForInput(
+                [this.#i18n.t('BATTLE.ACCURACY_LOWERED', { monster: target.name })],
+                () => {
+                    if (callback) callback();
+                }
+            );
+        } else {
+            if (callback) callback();
+        }
     }
 
     #createDamageEffect(target) {
@@ -417,26 +492,57 @@ export class BattleScene extends BaseScene {
     }
 
     //EJECUTA UN ATAQUE DE UN ENEMIGO
-    #enemyAttack() {
+    #enemyAttack(callback) {
         if (this.#activeEnemyMonster.isFainted) {
             console.log('NO ATACAR A UN ENEMIGO MUERTO')
-            this.#battleStateMachine.setState(BATTLE_STATES.POST_ATTACK_CHECK);
+            if (callback) callback();
+            return;
         }
+
+        const attack = this.#activeEnemyMonster.attacks[0];
+
+        // Comprobar precisión
+        const hitChance = this.#activeEnemyMonster.currentAccuracy;
+        const randomRoll = Math.random() * 100;
+        const isHit = randomRoll < hitChance;
 
         const attackMsg = this.#i18n.t('BATTLE.ENEMY_USED_ATTACK', {
             monster: this.#activeEnemyMonster.name,
-            attack: this.#i18n.t(`ATTACKS.${this.#activeEnemyMonster.attacks[0].id}`),
+            attack: this.#i18n.t(`ATTACKS.${attack.id}`),
         });
         this.#battleMenu.updateInfoPaneMessageNoInputRequired(attackMsg, () => {
             this.time.delayedCall(1200, () => {
-                this.#attackManager.playAttackAnimation(this.#activeEnemyMonster.attacks[0].animationName, ATTACK_TARGET.PLAYER, () => {
-                    this.#activePlayerMonster.playTakeDamageAnimation(() => {
-                        this.#activePlayerMonster.takeDamage(this.#activeEnemyMonster.baseAttack, () => {
-                            // Efecto de daño al jugador
-                            this.#createDamageEffect(this.#activePlayerMonster);
-                            this.#battleStateMachine.setState(BATTLE_STATES.POST_ATTACK_CHECK)
+                if (!isHit) {
+                    // Falló el ataque
+                    this.#battleMenu.updateInfoPaneMessagesWaitForInput(
+                        [this.#i18n.t('BATTLE.ATTACK_MISSED', { monster: this.#activeEnemyMonster.name })],
+                        () => {
+                            if (callback) callback();
+                        }
+                    );
+                    return;
+                }
+
+                this.#attackManager.playAttackAnimation(attack.animationName, ATTACK_TARGET.PLAYER, () => {
+                    if (attack.damage > 0) {
+                        this.#activePlayerMonster.playTakeDamageAnimation(() => {
+                            this.#activePlayerMonster.takeDamage(attack.damage, () => {
+                                // Efecto de daño al jugador
+                                this.#createDamageEffect(this.#activePlayerMonster);
+
+                                // Sincronizar la vida del jugador con el DataManager después del daño
+                                const party = dataManager.store.get(DATA_MANAGER_STORE_KEYS.MONSTER_IN_PARTY);
+                                if (party && party[0]) {
+                                    party[0].currentHP = this.#activePlayerMonster.currentHP;
+                                    dataManager.store.set(DATA_MANAGER_STORE_KEYS.MONSTER_IN_PARTY, party);
+                                }
+
+                                this.#handleAttackEffect(attack, this.#activePlayerMonster, callback);
+                            })
                         })
-                    })
+                    } else {
+                        this.#handleAttackEffect(attack, this.#activePlayerMonster, callback);
+                    }
                 })
             })
         })
@@ -454,8 +560,15 @@ export class BattleScene extends BaseScene {
                 this.#battleMenu.updateInfoPaneMessageNoInputRequired(
                     this.#i18n.t('BATTLE.ENEMY_FAINTED', { monster: this.#activeEnemyMonster.name }),
                     () => {
-                        //TODO
-                        this.#battleStateMachine.setState(BATTLE_STATES.FINISHED)
+                        // Dar una poción al finalizar (ID: 1)
+                        dataManager.addItem(1, 1);
+                        const potionName = this.#i18n.t('ITEMS.1.NAME');
+                        this.#battleMenu.updateInfoPaneMessagesWaitForInput(
+                            [this.#i18n.t('BATTLE.GOT_ITEM', { itemName: potionName })],
+                            () => {
+                                this.#battleStateMachine.setState(BATTLE_STATES.FINISHED)
+                            }
+                        )
                     }
                 )
             })
@@ -463,22 +576,53 @@ export class BattleScene extends BaseScene {
         }
 
         if (this.#activePlayerMonster.isFainted) {
-            this.#activePlayerMonster.playDeathAnimation(() => {
-                this.#createDeathEffect(this.#activePlayerMonster);
-
-                this.#battleMenu.updateInfoPaneMessageNoInputRequired(
-                    this.#i18n.t('BATTLE.PLAYER_FAINTED', { monster: this.#activePlayerMonster.name }),
-                    () => {
-                        //TODO
-                        console.log('CAMBIANDO TEXTO')
-                        console.log('ALIADO MUERTO')
+            this.#battleMenu.updateInfoPaneMessagesWaitForInput(
+                [this.#i18n.t('BATTLE.PLAYER_FAINTED')],
+                () => {
+                    this.#activePlayerMonster.playDeathAnimation(() => {
+                        this.#createDeathEffect(this.#activePlayerMonster);
                         this.#battleStateMachine.setState(BATTLE_STATES.FINISHED)
-                    }
-                )
-            })
+                    })
+                }
+            )
             return
         }
-        this.#battleStateMachine.setState(BATTLE_STATES.PLAYER_INPUT)
+
+        // Daño de clima (Sol) al final del turno
+        const enemyWeatherDamage = Math.round(this.#activeEnemyMonster.maxHP / 8);
+        const playerWeatherDamage = Math.round(this.#activePlayerMonster.maxHP / 8);
+
+        this.#battleMenu.updateInfoPaneMessagesWaitForInput(
+            [this.#i18n.t('BATTLE.SUNNY_WEATHER_DAMAGE')],
+            () => {
+                this.time.delayedCall(500, () => {
+                    // Flash visual sincronizado con el daño
+                    this.#flashSunnyWeather(() => {
+                        // Daño al enemigo
+                        this.#activeEnemyMonster.playTakeDamageAnimation(() => {
+                            this.#activeEnemyMonster.takeDamage(enemyWeatherDamage, () => {
+                                // Daño al jugador
+                                this.#activePlayerMonster.playTakeDamageAnimation(() => {
+                                    this.#activePlayerMonster.takeDamage(playerWeatherDamage, () => {
+                                        if (this.#activeEnemyMonster.isFainted || this.#activePlayerMonster.isFainted) {
+                                            this.#battleStateMachine.setState(BATTLE_STATES.RECHECK);
+                                        } else {
+                                            // Sincronizar la vida del jugador con el DataManager después del daño de clima
+                                            const party = dataManager.store.get(DATA_MANAGER_STORE_KEYS.MONSTER_IN_PARTY);
+                                            if (party && party[0]) {
+                                                party[0].currentHP = this.#activePlayerMonster.currentHP;
+                                                dataManager.store.set(DATA_MANAGER_STORE_KEYS.MONSTER_IN_PARTY, party);
+                                            }
+                                            this.#battleStateMachine.setState(BATTLE_STATES.PLAYER_INPUT);
+                                        }
+                                    });
+                                });
+                            });
+                        });
+                    });
+                });
+            }
+        );
     }
 
     #createDeathEffect(target) {
@@ -608,11 +752,40 @@ export class BattleScene extends BaseScene {
                 if (this.#battleMenu.wasItemUsed) {
                     this.#activePlayerMonster.updateMonsterHealth(dataManager.store.get(DATA_MANAGER_STORE_KEYS.MONSTER_IN_PARTY)[0].currentHP)
                     this.time.delayedCall(500, () => {
-                        this.#enemyAttack();
+                        this.#enemyAttack(() => {
+                            this.#battleStateMachine.setState(BATTLE_STATES.POST_ATTACK_CHECK);
+                        });
                     })
                     return;
                 }
-                this.#playerAttack()
+
+                // Determinar el orden de ataque basado en la velocidad
+                const playerSpeed = this.#activePlayerMonster.baseSpeed;
+                const enemySpeed = this.#activeEnemyMonster.baseSpeed;
+
+                if (playerSpeed >= enemySpeed) {
+                    // Jugador ataca primero
+                    this.#playerAttack(() => {
+                        if (this.#activeEnemyMonster.isFainted) {
+                            this.#battleStateMachine.setState(BATTLE_STATES.POST_ATTACK_CHECK);
+                        } else {
+                            this.#enemyAttack(() => {
+                                this.#battleStateMachine.setState(BATTLE_STATES.POST_ATTACK_CHECK);
+                            });
+                        }
+                    });
+                } else {
+                    // Enemigo ataca primero
+                    this.#enemyAttack(() => {
+                        if (this.#activePlayerMonster.isFainted) {
+                            this.#battleStateMachine.setState(BATTLE_STATES.POST_ATTACK_CHECK);
+                        } else {
+                            this.#playerAttack(() => {
+                                this.#battleStateMachine.setState(BATTLE_STATES.POST_ATTACK_CHECK);
+                            });
+                        }
+                    });
+                }
             }
         })
 
@@ -650,6 +823,13 @@ export class BattleScene extends BaseScene {
             }
         })
 
+        this.#battleStateMachine.addState({
+            name: BATTLE_STATES.RECHECK,
+            onEnter: () => {
+                this.#battleStateMachine.setState(BATTLE_STATES.POST_ATTACK_CHECK);
+            }
+        })
+
         //start the state machine
         this.#battleStateMachine.setState('INTRO')
     }
@@ -667,6 +847,10 @@ export class BattleScene extends BaseScene {
 
         if (this.#vignetteEffect) {
             this.#vignetteEffect.destroy();
+        }
+
+        if (this.#sunnyWeatherOverlay) {
+            this.#sunnyWeatherOverlay.destroy();
         }
     }
 }

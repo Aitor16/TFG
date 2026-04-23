@@ -202,6 +202,11 @@ export class PreloadScene extends BaseScene {
         this.load.image(INVENTORY_ASSET_KEYS.INVENTORY_BACKGROUND, `${monsterTamerPath}/ui/inventory/inventario.png`)
         //this.load.image(INVENTORY_ASSET_KEYS.INVENTORY_BAG, `${monsterTamerPath}/ui/inventory/bag.png`)
 
+        // AUDIO
+        this.load.audio('TITLE', 'assets/audio/Titulo.mp3');
+        this.load.audio('BATTLE', 'assets/audio/Battle.mp3');
+        this.load.audio('WORLD', 'assets/audio/World.mp3');
+        this.load.audio('OPTIONS', 'assets/audio/Opciones.mp3');
     }
 
     async create() {

@@ -22,6 +22,7 @@ export const NPC_MOVEMENT_PATTERN = Object.freeze({
 * @property {string[]} messages
 * @property {NPCPath} npcPath
 * @property {NpcMovementPattern} movementPattern
+* @property {string} [dialogBackgroundKey]
 */
 
 /**
@@ -44,6 +45,8 @@ export class NPC extends Character{
     /**@type {NpcMovementPattern} */
     #movementPattern;
     #lastMovementTime
+    /**@type {string | undefined} */
+    #dialogBackgroundKey
 
     /**
      * 
@@ -70,6 +73,7 @@ export class NPC extends Character{
         this.#movementPattern = config.movementPattern
         this.#currentPathIndex = 0
         this.#lastMovementTime = Phaser.Math.Between(3500, 5000)
+        this.#dialogBackgroundKey = config.dialogBackgroundKey
     }
 
     /**@type {string[]} */
@@ -80,6 +84,11 @@ export class NPC extends Character{
     /**@type {boolean} */
     get isTalkingToPlayer(){
         return this.#talkingToPlayer
+    }
+
+    /**@type {string | undefined} */
+    get dialogBackgroundKey(){
+        return this.#dialogBackgroundKey
     }
 
     /**

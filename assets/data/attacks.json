@@ -2,11 +2,20 @@
     {
         "id": 1,
         "name": "slash",
-        "animationName": "SLASH"
+        "animationName": "SLASH",
+        "damage": 7
     },
     {
         "id": 2,
         "name": "grenade",
-        "animationName": "GRENADE"
+        "animationName": "GRENADE",
+        "damage": 9
+    },
+    {
+        "id": 3,
+        "name": "smoke_bomb",
+        "animationName": "GRENADE",
+        "damage": 0,
+        "effect": "LOWER_ACCURACY_15"
     }
 ]

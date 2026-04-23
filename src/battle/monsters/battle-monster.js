@@ -25,6 +25,8 @@ export class BattleMonster {
     _phaserHealthBarGameContainer;
     /**@protected @type {boolean} */
     _skipBattleAnimations;
+    /**@protected @type {number} */
+    _currentAccuracy;
 
     /**CONSTRUCTOR
      * @param {import("../../types/typedef.js").BattleMonsterConfig} config 
@@ -35,6 +37,7 @@ export class BattleMonster {
         this._monsterDetails = config.monsterDetails
         this._currentHealth = this._monsterDetails.currentHP
         this._maxHealth = this._monsterDetails.maxHP
+        this._currentAccuracy = this._monsterDetails.baseAccuracy
         this._monsterAttacks = []
         this._skipBattleAnimations = config.skipBattleAnimations || false;
         this._phaserGameObject = this._scene.add.image(position.x, position.y, this._monsterDetails.assetKey, this._monsterDetails.assetFrame || 0).setAlpha(0).setFlipX(!!this._monsterDetails.flipX);
@@ -80,6 +83,21 @@ export class BattleMonster {
     /**@type {number} */
     get baseAttack(){
         return this._monsterDetails.baseAttack;
+    }
+
+    /**@type {number} */
+    get baseSpeed(){
+        return this._monsterDetails.baseSpeed;
+    }
+
+    /**@type {number} */
+    get baseAccuracy(){
+        return this._monsterDetails.baseAccuracy;
+    }
+
+    /**@type {number} */
+    get currentAccuracy(){
+        return this._currentAccuracy;
     }
 
     /**@type {number} */
@@ -139,6 +157,17 @@ export class BattleMonster {
             this._currentHealth = 0;
         }
         this._healthBar.setMeterPercentageAnimated(this._currentHealth / this._maxHealth , {callback})
+    }
+
+    /**
+     * @param {number} amount
+     */
+    reduceAccuracy(amount) {
+        this._currentAccuracy -= amount;
+        if (this._currentAccuracy < 0) {
+            this._currentAccuracy = 0;
+        }
+        console.log(`${this.name}'s accuracy reduced by ${amount}. Current: ${this._currentAccuracy}`);
     }
 
     /**

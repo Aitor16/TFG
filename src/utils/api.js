@@ -1,9 +1,12 @@
-const BASE_URL = 'http://localhost:3000/api';
+const BASE_URL = 'http://localhost:5000/api';
 
 export const API = {
   async getPlayers() {
     try {
       const response = await fetch(`${BASE_URL}/players`);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
       return await response.json();
     } catch (error) {
       console.error('Error fetching players:', error);
@@ -20,6 +23,9 @@ export const API = {
         },
         body: JSON.stringify({ username, score }),
       });
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
       return await response.json();
     } catch (error) {
       console.error('Error saving score:', error);
@@ -49,6 +55,9 @@ export const API = {
         },
         body: JSON.stringify({ username, gameData }),
       });
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
       return await response.json();
     } catch (error) {
       console.error('Error saving player data:', error);

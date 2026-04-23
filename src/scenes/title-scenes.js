@@ -69,6 +69,7 @@ export class TitleScene extends BaseScene {
         super({
             key: SCENE_KEYS.TITLE_SCENE,
         })
+        this._musicKey = 'TITLE';
     }
 
     init() {
@@ -90,7 +91,7 @@ export class TitleScene extends BaseScene {
         this.#selectedMenuOptions = MAIN_MENU_OPTIONS.NEW_GAME
         this.#isContinueButtonEnabled = dataManager.store.get(DATA_MANAGER_STORE_KEYS.GAME_STARTED) || false
 
-        
+
 
         // Fondo postapocalíptico
         this.#createApocalypticBackground()
@@ -144,7 +145,7 @@ export class TitleScene extends BaseScene {
         this.add.image(0, 0, TITLE_ASSET_KEYS.BACKGROUND)
             .setOrigin(0)
             .setDisplaySize(this.scale.width, this.scale.height);
-        
+
 
         // Gradiente de colores apocalípticos (óxido, sangre, tierra quemada)
         //const bgGraphics = this.add.graphics();

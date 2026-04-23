@@ -57,9 +57,10 @@ export class DialogUi {
                 0xede4f3,
                 0.9
             ).setOrigin(0).setStrokeStyle(8, 0x905ac2, 1)
-        this.#container = this.#scene.add.container(0,0, [panel])
-        this.#uiText = this.#scene.add.text(18,12, CANNOT_READ_SIGN_TEXT, {
-            ...UI_TEXT_STYLE,...{wordWrap: {width: this.#width - 18}}
+        this.#container = this.#scene.add.container(0, 0, [panel])
+        this.#container.setDepth(1000) // Aseguramos que esté por encima de todo
+        this.#uiText = this.#scene.add.text(18, 12, CANNOT_READ_SIGN_TEXT, {
+            ...UI_TEXT_STYLE, ...{ wordWrap: { width: this.#width - 18 } }
         })
         this.#container.add(this.#uiText)
         this.#createPlayerInputCursor()
@@ -89,8 +90,11 @@ export class DialogUi {
         this.#messagesToShow = [...messages]
         this.#onCompleteCallback = callback;
         console.log('Mostrando dialogo')
-        const {x, bottom} = this.#scene.cameras.main.worldView;
-        const startX = x + this.#padding;
+        
+        // Usamos la altura de la cámara directamente si worldView no está listo (evita que salga fuera de pantalla al inicio)
+        const camera = this.#scene.cameras.main;
+        const bottom = camera.worldView.bottom || camera.height;
+        const startX = camera.worldView.x + this.#padding;
         const startY = bottom - this.#height - this.#padding / 4
 
         this.#container.setPosition(startX, startY)

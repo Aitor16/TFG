@@ -21,6 +21,8 @@ import Phaser from "../lib/phaser.js";
 * @property {number} level
 * @property {number} currentHP
 * @property {number} baseAttack
+* @property {number} baseAccuracy
+* @property {number} baseSpeed
 * @property {number[]} attackIDs
 * @property {Object} [scale]
 * @property {number} [scale.party]
@@ -41,6 +43,8 @@ import Phaser from "../lib/phaser.js";
  * @property {number} id
  * @property {string} name
  * @property {import("../battle/attacks/attack-key.js").AttackKeys} animationName
+ * @property {number} damage
+ * @property {string} [effect]
  */
 
 /**

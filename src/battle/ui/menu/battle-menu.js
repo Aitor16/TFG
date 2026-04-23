@@ -7,7 +7,7 @@ import { ACTIVE_BATTLE_MENU, ATTACK_MOVE_OPTIONS, BATTLE_MENU_OPTIONS } from "./
 import { BATTLE_UI_TEXT_STYLE } from "./battle-menu-config.js";
 import { BattleMonster } from "../../monsters/battle-monster.js";
 import { animateText } from "../../../utils/text-utils.js";
-import { dataManager } from "../../../utils/data-manager.js";
+import { DATA_MANAGER_STORE_KEYS, dataManager } from "../../../utils/data-manager.js";
 import { i18n } from "../../../utils/i18n.js";
 
 const BATTLE_MENU_CURSOR_POS = Object.freeze({
@@ -68,6 +68,8 @@ export class BattleMenu {
     #queuedMessagesSkipAnimationPlaying
     /**@type {boolean} */
     #usedItem
+    /**@type {boolean} */
+    #fleeSelected;
     /**@type {import("../../../utils/i18n.js").I18n} */
     #i18n;
 
@@ -88,6 +90,7 @@ export class BattleMenu {
         this.#skipAnimations = skipBattleAnimations;
         this.#queuedMessagesSkipAnimationPlaying = false;
         this.#usedItem = false;
+        this.#fleeSelected = false;
         this.#i18n = i18n(this.#scene);
         this.#createMainInfoPane()
         this.#createMainBattleMenu()
@@ -112,6 +115,10 @@ export class BattleMenu {
 
     get wasItemUsed() {
         return this.#usedItem;
+    }
+
+    get isWaitingForInput() {
+        return this.#waitingForPlayerInput;
     }
 
     //MOSTRAR EL MENU PRINCIPAL
@@ -313,8 +320,8 @@ export class BattleMenu {
         this.#moveSelectionSubBattleMenuPhaserContainerObject = this.#scene.add.container(0, 875, [
             this.#scene.add.text(55, 22, this.#i18n.t(`ATTACKS.${this.#activePlayerMonster.attacks[0]?.id || 0}`), BATTLE_UI_TEXT_STYLE),
             this.#scene.add.text(800, 22, this.#i18n.t(`ATTACKS.${this.#activePlayerMonster.attacks[1]?.id || 0}`), BATTLE_UI_TEXT_STYLE),
-            this.#scene.add.text(800, 100, this.#i18n.t(`ATTACKS.${this.#activePlayerMonster.attacks[2]?.id || 0}`), BATTLE_UI_TEXT_STYLE),
-            this.#scene.add.text(55, 100, this.#i18n.t(`ATTACKS.${this.#activePlayerMonster.attacks[3]?.id || 0}`), BATTLE_UI_TEXT_STYLE),
+            this.#scene.add.text(55, 100, this.#i18n.t(`ATTACKS.${this.#activePlayerMonster.attacks[2]?.id || 0}`), BATTLE_UI_TEXT_STYLE),
+            this.#scene.add.text(800, 100, this.#i18n.t(`ATTACKS.${this.#activePlayerMonster.attacks[3]?.id || 0}`), BATTLE_UI_TEXT_STYLE),
             this.#attackBattleMenuCursorPhaserImageObject,
         ])
         this.hideCharacterAttackSubmenu();
@@ -583,6 +590,7 @@ export class BattleMenu {
     //SELECCIONAR OPCION DEL MENU
     #handlePlayerChooseMainBattleOption() {
         this.hideMainBattleMenu();
+        this.#fleeSelected = false;
 
         if (this.#selectedBattleMenuOption === BATTLE_MENU_OPTIONS.FIGHT) {
             this.showCharacterAttackSubmenu();
@@ -590,6 +598,13 @@ export class BattleMenu {
         }
 
         if (this.#selectedBattleMenuOption === BATTLE_MENU_OPTIONS.ITEM) {
+            // Sincronizar la vida del jugador con el DataManager antes de abrir el inventario
+            const party = dataManager.store.get(DATA_MANAGER_STORE_KEYS.MONSTER_IN_PARTY);
+            if (party && party[0]) {
+                party[0].currentHP = this.#activePlayerMonster.currentHP;
+                dataManager.store.set(DATA_MANAGER_STORE_KEYS.MONSTER_IN_PARTY, party);
+            }
+
             this.#activeBattleMenu = ACTIVE_BATTLE_MENU.BATTLE_ITEM;
             const sceneDataToPass = {
                 previousSceneName: SCENE_KEYS.BATTLE_SCENE,
@@ -607,17 +622,16 @@ export class BattleMenu {
             },);
             return;
         }
-
         if (this.#selectedBattleMenuOption === BATTLE_MENU_OPTIONS.FLEE) {
-            //TODO
-            this.#activeBattleMenu = ACTIVE_BATTLE_MENU.BATTLE_FLEE;
-            this.updateInfoPaneMessagesWaitForInput([this.#i18n.t('BATTLE_MENU.FAIL_FLEE')], () => {
-                this.#switchToMainBattleMenu();
-            },);
+            this.#fleeSelected = true;
             return;
         }
 
         exhaustiveGuard(this.#selectedBattleMenuOption)
+    }
+
+    get wasFleeSelected() {
+        return this.#fleeSelected;
     }
 
     //SELECCIONAR ATAQUES

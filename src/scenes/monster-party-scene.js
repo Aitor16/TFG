@@ -64,6 +64,7 @@ export class MonsterPartyScene extends BaseScene {
         super({
             key: SCENE_KEYS.MONSTER_PARTY_SCENE,
         })
+        this._musicKey = 'OPTIONS';
     }
 
     /**

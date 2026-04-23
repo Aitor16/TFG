@@ -11,7 +11,7 @@ import { Player } from "../world/characters/player.js"
 // Importamos la clase de controles
 import { Controls } from "../utils/controls.js"
 // Importamos configuraciones como tamaño de tile y alpha de capas de colisión
-import { TILE_SIZE, TILED_COLLISION_LAYER_ALPHA } from "../config.js"
+import { TILE_SIZE, TILED_COLLISION_LAYER_ALPHA, NPC_DIALOG_BACKGROUNDS } from "../config.js"
 // Importamos la dirección y sus constantes
 import { DIRECTION } from "../common/direction.js"
 // Importamos el gestor de datos y sus claves
@@ -54,7 +54,8 @@ const TILED_NPC_PROPERTY = Object.freeze({
     IS_SPAWN_POINT: 'is_spawn',       // Si es punto de aparición
     MOVEMENT_PATTERN: 'movement_pattern', // Patrón de movimiento
     MESSAGE: 'messages',               // Mensajes del NPC
-    FRAME: 'frame'                     // Frame del sprite
+    FRAME: 'frame',                     // Frame del sprite
+    DIALOG_BACKGROUND: 'dialog_background' // Fondo del diálogo
 })
 
 /**
@@ -96,6 +97,7 @@ export class WorldScene extends BaseScene {
             key: SCENE_KEYS.WORLD_SCENE, // Clave única para identificar la escena
             //active: true
         });
+        this._musicKey = 'WORLD';
         console.log(`[${WorldScene.name}: constructor] invoked`)
     }
 
@@ -399,7 +401,7 @@ export class WorldScene extends BaseScene {
             const usePlaceholderText = this.#player.direction !== DIRECTION.UP;
             let textToShow = this.#i18n.t('WORLD.CANNOT_READ_SIGN', { defaultValue: CANNOT_READ_SIGN_TEXT });
             if (!usePlaceholderText) {
-                textToShow = msg || this.#i18n.t('WORLD.NPC_TIPS', { defaultValue: SAMPLE_TEXT });
+                textToShow = this.#i18n.t(msg) || this.#i18n.t('WORLD.NPC_TIPS', { defaultValue: SAMPLE_TEXT });
             }
             console.log(textToShow);
             this.#dialogUi.showDialogModal([textToShow]);
@@ -416,7 +418,13 @@ export class WorldScene extends BaseScene {
             nearbyNpc.facePlayer(this.#player.direction); // El NPC mira al jugador
             nearbyNpc.isTalkingToPlayer = true; // Marcamos que está hablando
             this.#npcPlayerIsInteractingWith = nearbyNpc; // Guardamos referencia
-            this.#dialogUi.showDialogModal(nearbyNpc.messages); // Mostramos sus mensajes
+            
+            // Lanzamos la escena de diálogo a pantalla completa
+            this.scene.launch(SCENE_KEYS.NPC_DIALOG_SCENE, {
+                messages: nearbyNpc.messages,
+                backgroundImageKey: nearbyNpc.dialogBackgroundKey || 'ZOMBIE'
+            });
+            this.scene.pause(SCENE_KEYS.WORLD_SCENE);
         }
     }
 
@@ -525,8 +533,13 @@ export class WorldScene extends BaseScene {
              */
             const npcMovement = npcObject.properties.find((property) => property.name === TILED_NPC_PROPERTY.MOVEMENT_PATTERN)?.value || 'IDLE';
 
-            // Dividimos los mensajes por el separador '::'
-            const npcMessages = npcMessagesString.split('::');
+            /**
+             * @type {string | undefined} - Fondo de diálogo del NPC
+             */
+            let npcDialogBackground = NPC_DIALOG_BACKGROUNDS[npcObject.name] || npcObject.properties.find((property) => property.name === TILED_NPC_PROPERTY.DIALOG_BACKGROUND)?.value;
+
+            // Dividimos los mensajes por el separador '::' y los traducimos
+            const npcMessages = npcMessagesString.split('::').map(msg => this.#i18n.t(msg));
 
             // Creamos el NPC
             const npc = new NPC({
@@ -537,6 +550,7 @@ export class WorldScene extends BaseScene {
                 messages: npcMessages,
                 npcPath,
                 movementPattern: /** @type {import("../world/characters/npc.js").NpcMovementPattern} */ (npcMovement),
+                dialogBackgroundKey: npcDialogBackground
             });
 
             // Añadimos el NPC al array

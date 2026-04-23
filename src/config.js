@@ -5,3 +5,13 @@ export const TEXT_SPEED = Object.freeze({
     MEDIUM: 30,
     FAST: 15
 })
+
+/**
+ * Mapeo de nombres de NPCs (en Tiled) a sus fondos de diálogo (Asset Keys).
+ * @type {Object.<string, string>}
+ */
+export const NPC_DIALOG_BACKGROUNDS = Object.freeze({
+    // 'NombreNPC': 'NombreDeLaKey',
+    'npc': 'PERROZ',
+    'npc2': 'SOLDIER'
+})
