@@ -663,8 +663,6 @@ export class BattleScene extends BaseScene {
             dataManager.store.set(DATA_MANAGER_STORE_KEYS.MONSTER_IN_PARTY, party);
         }
 
-        // Guardar datos en la nube al terminar la batalla
-        dataManager.saveData();
 
         // Efecto de fade out con temblor final
         this.cameras.main.shake(200, 0.01);

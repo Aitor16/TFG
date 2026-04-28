@@ -358,6 +358,23 @@ export class WorldScene extends BaseScene {
     }
 
     /**
+     * Se llama cuando la escena se reanuda (por ejemplo, al cerrar el diálogo del NPC)
+     * @param {Phaser.Scenes.Systems} sys 
+     * @param {any} data 
+     */
+    handleSceneResume(sys, data) {
+        super.handleSceneResume(sys, data);
+        console.log(`[${WorldScene.name}:handleSceneResume] invoked`);
+        
+        // Si estábamos interactuando con un NPC, liberamos su estado para que vuelva a moverse
+        if (this.#npcPlayerIsInteractingWith) {
+            console.log(`[${WorldScene.name}:handleSceneResume] resetting NPC interaction state`);
+            this.#npcPlayerIsInteractingWith.isTalkingToPlayer = false;
+            this.#npcPlayerIsInteractingWith = undefined;
+        }
+    }
+
+    /**
      * Maneja la interacción del jugador con el entorno
      */
     #handlePlayerInteraction() {

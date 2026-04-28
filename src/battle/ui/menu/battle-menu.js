@@ -11,13 +11,13 @@ import { DATA_MANAGER_STORE_KEYS, dataManager } from "../../../utils/data-manage
 import { i18n } from "../../../utils/i18n.js";
 
 const BATTLE_MENU_CURSOR_POS = Object.freeze({
-    x: 42,
-    y: 38
+    x: 27,
+    y: 61
 })
 
 const ATTACK_MENU_CURSOR_POS = Object.freeze({
-    x: 20,
-    y: 25,
+    x: -25,
+    y: 48,
 })
 
 const PLAYER_INPUT_CURSOR_POS = Object.freeze({
@@ -292,7 +292,7 @@ export class BattleMenu {
     #createMainBattleMenu() {
         this.#battleTextGameObjectLine1 = this.#scene.add.text(70, 910, '', BATTLE_UI_TEXT_STYLE);
         this.#battleTextGameObjectLine2 = this.#scene.add.text(70, 980, '', BATTLE_UI_TEXT_STYLE)
-        this.#mainBattleMenuCursorPhaserImageObject = this.#scene.add.image(42, 38, UI_ASSET_KEYS.CURSOR, 0).setOrigin(0.5).setScale(0.3)
+        this.#mainBattleMenuCursorPhaserImageObject = this.#scene.add.image(42, 38, UI_ASSET_KEYS.CURSOR, 0).setOrigin(0.5).setScale(0.2).setAngle(-25)
         this.#mainBattleMenuPhaserContainerObject = this.#scene.add.container(1200, 875, [
             this.#createMainInfoSubPane(),
             this.#scene.add.text(55, 22, this.#i18n.t(`BATTLE_MENU.${BATTLE_MENU_OPTIONS.FIGHT}`), BATTLE_UI_TEXT_STYLE),
@@ -308,7 +308,7 @@ export class BattleMenu {
 
     //CREAR EL MENU DE ATAQUES
     #createPlayerAttackSubMenu() {
-        this.#attackBattleMenuCursorPhaserImageObject = this.#scene.add.image(20, 25, UI_ASSET_KEYS.CURSOR, 0).setOrigin(0).setScale(0.3);
+        this.#attackBattleMenuCursorPhaserImageObject = this.#scene.add.image(20, 25, UI_ASSET_KEYS.CURSOR, 0).setOrigin(0).setScale(0.2).setAngle(-25);
 
         /**@type {string[]} */
         const attackNames = [];
@@ -451,13 +451,13 @@ export class BattleMenu {
                 this.#mainBattleMenuCursorPhaserImageObject.setPosition(BATTLE_MENU_CURSOR_POS.x, BATTLE_MENU_CURSOR_POS.y)
                 return;
             case BATTLE_MENU_OPTIONS.FLEE:
-                this.#mainBattleMenuCursorPhaserImageObject.setPosition(380, 120)
+                this.#mainBattleMenuCursorPhaserImageObject.setPosition(365, 143)
                 return;
             case BATTLE_MENU_OPTIONS.ITEM:
-                this.#mainBattleMenuCursorPhaserImageObject.setPosition(BATTLE_MENU_CURSOR_POS.x, 120)
+                this.#mainBattleMenuCursorPhaserImageObject.setPosition(BATTLE_MENU_CURSOR_POS.x, 143)
                 return;
             case BATTLE_MENU_OPTIONS.SWITCH:
-                this.#mainBattleMenuCursorPhaserImageObject.setPosition(380, BATTLE_MENU_CURSOR_POS.y)
+                this.#mainBattleMenuCursorPhaserImageObject.setPosition(365, BATTLE_MENU_CURSOR_POS.y)
                 return;
             default:
                 exhaustiveGuard(this.#selectedBattleMenuOption);
@@ -566,13 +566,13 @@ export class BattleMenu {
                 this.#attackBattleMenuCursorPhaserImageObject.setPosition(ATTACK_MENU_CURSOR_POS.x, ATTACK_MENU_CURSOR_POS.y)
                 return;
             case ATTACK_MOVE_OPTIONS.MOVE_2:
-                this.#attackBattleMenuCursorPhaserImageObject.setPosition(770, ATTACK_MENU_CURSOR_POS.y)
+                this.#attackBattleMenuCursorPhaserImageObject.setPosition(725, ATTACK_MENU_CURSOR_POS.y)
                 return;
             case ATTACK_MOVE_OPTIONS.MOVE_3:
-                this.#attackBattleMenuCursorPhaserImageObject.setPosition(ATTACK_MENU_CURSOR_POS.x, 105)
+                this.#attackBattleMenuCursorPhaserImageObject.setPosition(ATTACK_MENU_CURSOR_POS.x, 128)
                 return;
             case ATTACK_MOVE_OPTIONS.MOVE_4:
-                this.#attackBattleMenuCursorPhaserImageObject.setPosition(770, 105)
+                this.#attackBattleMenuCursorPhaserImageObject.setPosition(725, 128)
                 return;
             default:
                 exhaustiveGuard(this.#selectedAttackMenuOption)
