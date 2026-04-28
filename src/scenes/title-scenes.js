@@ -87,6 +87,7 @@ export class TitleScene extends BaseScene {
     create() {
         super.create()
         console.log(`[${TitleScene.name}:create] invoked`)
+        console.log(`[${TitleScene.name}:create] state: ${dataManager.store.get(DATA_MANAGER_STORE_KEYS.GAME_STARTED)}`)
 
         this.#selectedMenuOptions = MAIN_MENU_OPTIONS.NEW_GAME
         this.#isContinueButtonEnabled = dataManager.store.get(DATA_MANAGER_STORE_KEYS.GAME_STARTED) || false
@@ -119,17 +120,21 @@ export class TitleScene extends BaseScene {
 
         // Evento de fade out
         this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, async () => {
+            console.log(`[${TitleScene.name}:fadeOut] complete, option: ${this.#selectedMenuOptions}`);
             if (this.#selectedMenuOptions === MAIN_MENU_OPTIONS.OPTIONS) {
                 this.scene.start(SCENE_KEYS.OPTION_SCENE, { previousSceneName: SCENE_KEYS.TITLE_SCENE })
                 return
             }
 
             if (this.#selectedMenuOptions === MAIN_MENU_OPTIONS.NEW_GAME) {
+                console.log(`[${TitleScene.name}:fadeOut] starting new game`);
                 await dataManager.startNewGame()
             } else if (this.#selectedMenuOptions === MAIN_MENU_OPTIONS.CONTINUE) {
+                console.log(`[${TitleScene.name}:fadeOut] loading data`);
                 await dataManager.loadData();
             }
 
+            console.log(`[${TitleScene.name}:fadeOut] starting world scene`);
             this.scene.start(SCENE_KEYS.WORLD_SCENE)
         })
 

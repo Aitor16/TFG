@@ -44,8 +44,8 @@ const LOCAL_STORAGE_KEY = 'MONSTER_TAMER_DATA'
 const initialState = {
     player: {
         position: {
-            x: 6 * TILE_SIZE,
-            y: 21 * TILE_SIZE
+            x: 28 * TILE_SIZE,
+            y: 38 * TILE_SIZE
         },
         direction: DIRECTION.DOWN
     },
@@ -141,9 +141,11 @@ class DataManager extends Phaser.Events.EventEmitter {
     }
 
     async loadData(username = 'Player1') {
+        console.log(`[${DataManager.name}:loadData] loading for ${username}`);
         // Try to load from MongoDB first
         try {
             const player = await API.getPlayerData(username);
+            console.log(`[${DataManager.name}:loadData] API response received`);
             if (player && player.gameData) {
                 console.log(`[${DataManager.name}:loadData] Loaded data from MongoDB for ${username}`);
                 this.#updateDataManager(player.gameData);
@@ -206,6 +208,7 @@ class DataManager extends Phaser.Events.EventEmitter {
         };
         existingData.inventory = structuredClone(initialState.inventory);
 
+        console.log(`[DataManager:startNewGame] Position set to: ${existingData.player.position.x}, ${existingData.player.position.y}`);
         this.#store.reset();
         this.#updateDataManager(existingData);
         await this.saveData(username);

@@ -127,18 +127,26 @@ export class WorldScene extends BaseScene {
         });
 
         // Posición inicial del jugador (calculada en tiles)
-        const x = 6 * TILE_SIZE;
-        const y = 22 * TILE_SIZE;
+        const x = 28 * TILE_SIZE;
+        const y = 38 * TILE_SIZE;
+        console.log(`[WorldScene] Initializing camera at ${x}, ${y}`);
 
-        // Configuramos los límites de la cámara (ancho: 1280px, alto: 2176px)
-        this.cameras.main.setBounds(0, 0, 1280, 2176);
+        console.log(`[${WorldScene.name}:create] starting create`);
+        // Cargamos el mapa del mundo desde Tiled
+        const map = this.make.tilemap({ key: WORLD_ASSET_KEYS.WORLD_MAIN_LEVEL });
+        console.log(`[${WorldScene.name}:create] map loaded: ${map.width}x${map.height}`);
+
+        // Añadimos la imagen de fondo del mundo inmediatamente para evitar pantalla negra
+        this.add.image(0, 0, WORLD_ASSET_KEYS.WORLD_BACKGROUND, 0).setOrigin(0);
+        console.log(`[${WorldScene.name}:create] background image added`);
+
+        // Configuramos los límites de la cámara
+        this.cameras.main.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
         // Aplicamos zoom a la cámara
         this.cameras.main.setZoom(1.5);
         // Centramos la cámara en la posición inicial del jugador
         this.cameras.main.centerOn(x, y);
-
-        // Cargamos el mapa del mundo desde Tiled
-        const map = this.make.tilemap({ key: WORLD_ASSET_KEYS.WORLD_MAIN_LEVEL });
+        console.log(`[${WorldScene.name}:create] camera configured`);
 
         // Configuramos la capa de colisiones
         const collisionTiles = map.addTilesetImage('collision', WORLD_ASSET_KEYS.WORLD_COLLISION);
@@ -146,6 +154,7 @@ export class WorldScene extends BaseScene {
             console.log(`[${WorldScene.name}:create] error al crear tiles de colisión`);
             return;
         }
+        console.log(`[${WorldScene.name}:create] collision tiles added`);
 
         // Creamos la capa de colisiones
         const collisionLayer = map.createLayer('Collision', collisionTiles, 0, 0);
@@ -153,9 +162,10 @@ export class WorldScene extends BaseScene {
             console.log(`[${WorldScene.name}:create] error al crear capa de colisión`);
             return;
         }
+        console.log(`[${WorldScene.name}:create] collision layer created`);
 
-        // Configuramos la transparencia y profundidad de la capa de colisiones
-        collisionLayer.setAlpha(TILED_COLLISION_LAYER_ALPHA).setDepth(0);
+        // Configuramos la transparencia y profundidad de la capa de colisiones (0 para ocultarla)
+        collisionLayer.setAlpha(0).setDepth(0);
 
         // Obtenemos la capa de carteles del mapa
         this.#signLayer = map.getObjectLayer('Sign');
@@ -163,7 +173,7 @@ export class WorldScene extends BaseScene {
             console.log(`[${WorldScene.name}:create] error al crear capa de carteles`);
             return;
         }
-        console.log(this.#signLayer);
+        console.log(`[${WorldScene.name}:create] sign layer found`);
 
         // Configuramos la capa de encuentros (donde aparecen monstruos)
         const encounterTiles = map.addTilesetImage('encounter', WORLD_ASSET_KEYS.WORLD_ENCOUNTER_ZONE);
@@ -171,6 +181,7 @@ export class WorldScene extends BaseScene {
             console.log(`[${WorldScene.name}:create] error al crear tiles de encuentro`);
             return;
         }
+        console.log(`[${WorldScene.name}:create] encounter tiles added`);
 
         // Creamos la capa de encuentros
         this.#encounterLayer = map.createLayer('Encounter', encounterTiles, 0, 0);
@@ -179,19 +190,17 @@ export class WorldScene extends BaseScene {
             return;
         }
 
-        // Configuramos la transparencia de la capa de encuentros
-        this.#encounterLayer.setAlpha(TILED_COLLISION_LAYER_ALPHA).setDepth(0);
-
-        // Añadimos la imagen de fondo del mundo
-        this.add.image(0, 0, WORLD_ASSET_KEYS.WORLD_BACKGROUND, 0).setOrigin(0);
+        // Configuramos la transparencia de la capa de encuentros (0 para ocultarla)
+        this.#encounterLayer.setAlpha(0).setDepth(0);
 
         // Creamos los NPCs en el mapa
         this.#createNPCs(map);
 
-        // Creamos al jugador
+        const playerPos = dataManager.store.get(DATA_MANAGER_STORE_KEYS.PLAYER_POSITION);
+        console.log(`[WorldScene] Creating player at ${playerPos.x}, ${playerPos.y}`);
         this.#player = new Player({
             scene: this, // La escena actual
-            position: dataManager.store.get(DATA_MANAGER_STORE_KEYS.PLAYER_POSITION), // Posición guardada
+            position: playerPos, // Posición guardada
             direction: dataManager.store.get(DATA_MANAGER_STORE_KEYS.PLAYER_DIRECTION), // Dirección guardada
             collisionLayer: collisionLayer, // Capa de colisiones
             spriteGridMovementFinishedCallback: () => {
@@ -418,7 +427,7 @@ export class WorldScene extends BaseScene {
             nearbyNpc.facePlayer(this.#player.direction); // El NPC mira al jugador
             nearbyNpc.isTalkingToPlayer = true; // Marcamos que está hablando
             this.#npcPlayerIsInteractingWith = nearbyNpc; // Guardamos referencia
-            
+
             // Lanzamos la escena de diálogo a pantalla completa
             this.scene.launch(SCENE_KEYS.NPC_DIALOG_SCENE, {
                 messages: nearbyNpc.messages,

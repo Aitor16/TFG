@@ -213,7 +213,9 @@ export class PreloadScene extends BaseScene {
         super.create()
         console.log(`[${PreloadScene.name}: create] invoked`)
         this.#createAnimation()
+        console.log(`[${PreloadScene.name}:create] starting data load`);
         await dataManager.loadData();
+        console.log(`[${PreloadScene.name}:create] data loaded, starting title scene`);
         this.scene.start(SCENE_KEYS.TITLE_SCENE)
     }
 
