@@ -396,7 +396,7 @@ export class BattleScene extends BaseScene {
             return;
         }
 
-        const selectedDirection = this._controls.getDirectionKeyPressedDown();
+        const selectedDirection = this._controls.getDirectionKeyJustPressed();
 
         if (selectedDirection !== DIRECTION.NONE) {
             this.#battleMenu.handlePlayerInput(selectedDirection);

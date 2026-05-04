@@ -12,6 +12,9 @@ export const TEXT_SPEED = Object.freeze({
  */
 export const NPC_DIALOG_BACKGROUNDS = Object.freeze({
     // 'NombreNPC': 'NombreDeLaKey',
-    'npc': 'PERROZ',
-    'npc2': 'SOLDIER'
+    'npc': 'npc',
+    'npc2': 'npc2',
+    'NPC': 'npc',
+    'NPC1': 'npc',
+    'NPC2': 'npc2'
 })

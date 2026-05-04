@@ -65,7 +65,9 @@
     "0": "-",
     "1": "Slash",
     "2": "Grenade",
-    "3": "Smoke Bomb"
+    "3": "Smoke Bomb",
+    "4": "Bite"
+
   },
   "ITEMS": {
     "1": {

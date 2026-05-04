@@ -713,7 +713,7 @@ export class TitleScene extends BaseScene {
             return
         }
 
-        const selectedDirection = this._controls.getDirectionKeyPressedDown();
+        const selectedDirection = this._controls.getDirectionKeyJustPressed();
 
         if (selectedDirection !== DIRECTION.NONE) {
             this.#moveMenuSelectCursor(selectedDirection);

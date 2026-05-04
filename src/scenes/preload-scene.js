@@ -8,6 +8,7 @@ import { WebFontFileLoader } from '../assets/web-font-file-loader.js'
 import { DataUtils } from '../utils/data-utils.js'
 import { dataManager } from '../utils/data-manager.js'
 import { BaseScene } from './base-scene.js'
+import { NPC_DIALOG_BACKGROUNDS } from '../config.js'
 
 //Exporta la clase PreloadScene donde se crea una clase escena heredando todas las funciones y propiedades de PhaserScenas
 export class PreloadScene extends BaseScene {
@@ -34,6 +35,17 @@ export class PreloadScene extends BaseScene {
         const axulArtAssetPath = 'assets/images/axulart'
         const parrabellumGamesAssetPath = 'assets/images/parabellum-games'
         const kenneyAssetPath = 'assets/images/kenneys-assets'
+        const dialogAssetPath = 'assets/images/dialog'
+        const attackAssetPath = 'assets/images/attacks'
+
+        //npc dialog background
+        this.load.image(NPC_DIALOG_BACKGROUNDS.npc,
+            `${dialogAssetPath}/dialog-npc1.png`
+        )
+        this.load.image(NPC_DIALOG_BACKGROUNDS.npc2,
+            `${dialogAssetPath}/dialog-npc2.png`
+        )
+
         //BATTLE BACKGROUNDS
         this.load.image(MAIN_BACKGROUND_ASSET_KEYS.CITY,
             `${backgroundPostFinemPath}/main-background.png`
@@ -137,6 +149,14 @@ export class PreloadScene extends BaseScene {
             frameWidth: 128,
             frameHeight: 128
         })
+        this.load.spritesheet(ATTACK_ASSET_KEYS.BITE, `${attackAssetPath}/Bite.png`, {
+            frameWidth: 128,
+            frameHeight: 128
+        })
+        this.load.spritesheet(ATTACK_ASSET_KEYS.SMOKEBOMB, `${pimenAssetPath}/smokebomb/smokeGrenade.png`, {
+            frameWidth: 724,
+            frameHeight: 724
+        })
 
         //load world assets
         this.load.image(
@@ -169,6 +189,16 @@ export class PreloadScene extends BaseScene {
         this.load.spritesheet(ENTITIES_ASSET_KEYS.NPC, `${parrabellumGamesAssetPath}/characters.png`, {
             frameWidth: 16,
             frameHeight: 16
+        })
+
+        this.load.spritesheet(ENTITIES_ASSET_KEYS.NPC_WALKING, `${npcPostFinemPath}/walking-npc.png`, {
+            frameWidth: 64,
+            frameHeight: 64
+        })
+
+        this.load.spritesheet(ENTITIES_ASSET_KEYS.NPC_DOWN, `${npcPostFinemPath}/npc-down.png`, {
+            frameWidth: 64,
+            frameHeight: 64
         })
 
         // ui components for title

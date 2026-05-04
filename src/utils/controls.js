@@ -78,13 +78,13 @@ export class Controls {
         }
         /**@type {import('../common/direction.js').Direction} */
         let selectedDirection = DIRECTION.NONE;
-        if(Phaser.Input.Keyboard.JustDown(this.#cursorKeys.left)) {
+        if(this.#cursorKeys.left.isDown) {
             selectedDirection = DIRECTION.LEFT
-        } else if(Phaser.Input.Keyboard.JustDown(this.#cursorKeys.right)) {
+        } else if(this.#cursorKeys.right.isDown) {
             selectedDirection = DIRECTION.RIGHT
-        } else if(Phaser.Input.Keyboard.JustDown(this.#cursorKeys.up)) {
+        } else if(this.#cursorKeys.up.isDown) {
             selectedDirection = DIRECTION.UP
-        } else if(Phaser.Input.Keyboard.JustDown(this.#cursorKeys.down)) {
+        } else if(this.#cursorKeys.down.isDown) {
             selectedDirection = DIRECTION.DOWN
         } 
         

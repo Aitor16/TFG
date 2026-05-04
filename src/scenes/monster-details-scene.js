@@ -70,7 +70,7 @@ export class MonsterDetailsScene extends BaseScene {
             fontSize: '64px'
         })
 
-        this.add.image(500, 480, this.#monsterDetails.assetKey).setOrigin(0.5, 0.5).setScale(this.#monsterDetails.scale?.details || 1.5).setFlipX(!!this.#monsterDetails.flipX)
+        this.add.image(450, 400, this.#monsterDetails.assetKey).setOrigin(0.5, 0.5).setScale(this.#monsterDetails.scale?.details || 1.5).setFlipX(!!this.#monsterDetails.flipX)
 
         if (this.#monsterAttacks[0] !== undefined) {
             const attackName = this.#i18n.t(`ATTACKS.${this.#monsterAttacks[0].id}`, { defaultValue: this.#monsterAttacks[0].name });

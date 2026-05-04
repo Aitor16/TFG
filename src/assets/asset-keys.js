@@ -54,7 +54,9 @@ export const DATA_ASSET_KEYS = Object.freeze({
 
 export const ATTACK_ASSET_KEYS = Object.freeze({
     GRENADE: 'GRENADE',
-    SLASH: 'SLASH'
+    SLASH: 'SLASH',
+    BITE: 'BITE',
+    SMOKEBOMB: 'SMOKEBOMB'
 })
 
 export const WORLD_ASSET_KEYS = Object.freeze({
@@ -68,6 +70,8 @@ export const WORLD_ASSET_KEYS = Object.freeze({
 export const ENTITIES_ASSET_KEYS = Object.freeze({
     PLAYER: 'PLAYER',
     NPC: 'NPC',
+    NPC_WALKING: 'NPC_WALKING',
+    NPC_DOWN: 'NPC_DOWN',
 })
 
 export const MONSTER_PARTY_ASSET_KEYS = Object.freeze({

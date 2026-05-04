@@ -1,7 +1,7 @@
 // Importamos Phaser desde la ruta especificada
 import Phaser from "../lib/phaser.js"
 // Importamos las claves de los assets del mundo
-import { WORLD_ASSET_KEYS } from "../assets/asset-keys.js"
+import { WORLD_ASSET_KEYS, ENTITIES_ASSET_KEYS } from "../assets/asset-keys.js"
 // Importamos la escena de batalla
 import { BattleScene } from "./battle-scene.js"
 // Importamos las claves de las escenas
@@ -286,9 +286,9 @@ export class WorldScene extends BaseScene {
         // Si el menú está visible, manejamos su input
         if (this.#menu.isVisible) {
             // Movimiento en el menú con las flechas
-            if (selectedDirectionHelDown !== DIRECTION.NONE) {
-                console.log(selectedDirectionHelDown)
-                this.#menu.handlePlayerInput(selectedDirectionHelDown);
+            if (selectedDirectionPressedOnce !== DIRECTION.NONE) {
+                console.log(selectedDirectionPressedOnce)
+                this.#menu.handlePlayerInput(selectedDirectionPressedOnce);
             }
 
             // Selección de opción con espacio
@@ -562,7 +562,9 @@ export class WorldScene extends BaseScene {
             /**
              * @type {string | undefined} - Fondo de diálogo del NPC
              */
-            let npcDialogBackground = NPC_DIALOG_BACKGROUNDS[npcObject.name] || npcObject.properties.find((property) => property.name === TILED_NPC_PROPERTY.DIALOG_BACKGROUND)?.value;
+            let npcDialogBackground = NPC_DIALOG_BACKGROUNDS[layerName] || 
+                                    NPC_DIALOG_BACKGROUNDS[npcObject.name] || 
+                                    npcObject.properties.find((property) => property.name === TILED_NPC_PROPERTY.DIALOG_BACKGROUND)?.value;
 
             // Dividimos los mensajes por el separador '::' y los traducimos
             const npcMessages = npcMessagesString.split('::').map(msg => this.#i18n.t(msg));
@@ -576,7 +578,8 @@ export class WorldScene extends BaseScene {
                 messages: npcMessages,
                 npcPath,
                 movementPattern: /** @type {import("../world/characters/npc.js").NpcMovementPattern} */ (npcMovement),
-                dialogBackgroundKey: npcDialogBackground
+                dialogBackgroundKey: npcDialogBackground,
+                assetKey: layerName === 'NPC1' ? ENTITIES_ASSET_KEYS.NPC_WALKING : ENTITIES_ASSET_KEYS.NPC_DOWN
             });
 
             // Añadimos el NPC al array

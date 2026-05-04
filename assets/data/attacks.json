@@ -14,8 +14,14 @@
     {
         "id": 3,
         "name": "smoke_bomb",
-        "animationName": "GRENADE",
+        "animationName": "SMOKEBOMB",
         "damage": 0,
         "effect": "LOWER_ACCURACY_15"
+    },
+    {
+        "id": 4,
+        "name": "bite",
+        "animationName": "BITE",
+        "damage": 10
     }
 ]

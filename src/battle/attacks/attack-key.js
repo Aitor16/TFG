@@ -5,5 +5,7 @@
 /**@enum {AttackKeys} */
 export const ATTACK_KEYS = Object.freeze({
     GRENADE: 'GRENADE',
-    SLASH: 'SLASH'
+    SLASH: 'SLASH',
+    BITE: 'BITE',
+    SMOKEBOMB: 'SMOKEBOMB'
 })

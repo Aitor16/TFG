@@ -23,10 +23,12 @@ export class PlayerBattleMonster extends BattleMonster {
         this.#addHealthBarComponents()
     }
 
+    //AJUSTA EL UI DE LA BARRA DE VIDA
     #setHealthBarText() {
         this.#healthBarTextGameObject.setText(`${this._currentHealth}/${this._maxHealth}`)
     }
 
+    //AÑADE COMPONENTES A LA BARRA DE VIDA
     #addHealthBarComponents() {
         this.#healthBarTextGameObject = this._scene.add.text(150, 160, '', {
             fontFamily: KENNEY_FUTURE_NARROW_FONT_NAME,
@@ -39,6 +41,7 @@ export class PlayerBattleMonster extends BattleMonster {
         this._phaserHealthBarGameContainer.add(this.#healthBarTextGameObject)
     }
 
+    //FUNCION PARA RECIBIR DAÑO
     /**
      * 
      * @param {number} damage 
@@ -49,6 +52,8 @@ export class PlayerBattleMonster extends BattleMonster {
         this.#setHealthBarText()
     }
 
+
+    //ANIMACION DE APARICION
     /**
      * 
      * @param {() => void} callback 

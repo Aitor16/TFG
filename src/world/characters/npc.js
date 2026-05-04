@@ -1,3 +1,4 @@
+import Phaser from "../../lib/phaser.js";
 import { ENTITIES_ASSET_KEYS } from "../../assets/asset-keys.js";
 import { DIRECTION } from "../../common/direction.js";
 import { exhaustiveGuard } from "../../utils/guard.js";
@@ -31,9 +32,11 @@ export const NPC_MOVEMENT_PATTERN = Object.freeze({
  */
 
 /**
- * @typedef {Omit<import("./character").CharacterConfig, 'assetKey' | 'idleFrameConfig'> & NPCConfigProps} NPCConfig
+ * @typedef {Omit<import("./character").CharacterConfig, 'idleFrameConfig'> & NPCConfigProps} NPCConfig
  */
 export class NPC extends Character{
+    /** @protected @type {string} */
+    _assetKey;
     /**@type {string[]} */
     #messages
     /**@type {boolean} */
@@ -53,21 +56,27 @@ export class NPC extends Character{
      * @param {NPCConfig} config 
      */
     constructor(config){
+        const assetKey = config.assetKey || ENTITIES_ASSET_KEYS.NPC;
+        const isWalkingNpc = assetKey === ENTITIES_ASSET_KEYS.NPC_WALKING;
         super({
             ...config,
-            assetKey: ENTITIES_ASSET_KEYS.NPC,
+            assetKey: assetKey,
             origin: {x: 0, y:0 },
             idleFrameConfig: {
-                DOWN: config.frame,
-                UP: config.frame + 1,
-                NONE: config.frame,
-                LEFT: config.frame + 2,
-                RIGHT: config.frame + 2
+                DOWN: isWalkingNpc ? 3 : config.frame,
+                UP: isWalkingNpc ? 1 : config.frame + 1,
+                NONE: isWalkingNpc ? 3 : config.frame,
+                LEFT: isWalkingNpc ? 6 : config.frame + 2,
+                RIGHT: isWalkingNpc ? 6 : config.frame + 2
             }
         })
 
+        this._assetKey = assetKey;
+
         this.#messages = config.messages
-        this._phaserGameObject.setScale(4)
+        if (this._assetKey === ENTITIES_ASSET_KEYS.NPC) {
+            this._phaserGameObject.setScale(4)
+        }
         this.#talkingToPlayer = false;
         this.#npcPath = config.npcPath
         this.#movementPattern = config.movementPattern
@@ -109,10 +118,10 @@ export class NPC extends Character{
                 this._phaserGameObject.setFrame(this._idleFrameConfig.UP).setFlipX(false)
                 break;
             case DIRECTION.LEFT:
-                this._phaserGameObject.setFrame(this._idleFrameConfig.RIGHT).setFlipX(false)
+                this._phaserGameObject.setFrame(this._idleFrameConfig.RIGHT).setFlipX(true)
                 break
             case DIRECTION.RIGHT:
-                this._phaserGameObject.setFrame(this._idleFrameConfig.LEFT).setFlipX(true)
+                this._phaserGameObject.setFrame(this._idleFrameConfig.LEFT).setFlipX(false)
                 break;
             case DIRECTION.UP:
                 this._phaserGameObject.setFrame(this._idleFrameConfig.DOWN).setFlipX(false)
@@ -182,18 +191,20 @@ export class NPC extends Character{
     moveCharacter(direction) {
         super.moveCharacter(direction)
 
+        const animKeyPrefix = this._assetKey === ENTITIES_ASSET_KEYS.NPC ? 'NPC_1' : this._assetKey;
+
         switch(this._direction){
             case DIRECTION.DOWN:
             case DIRECTION.RIGHT:
             case DIRECTION.UP:
-                if(!this._phaserGameObject.anims.isPlaying || this._phaserGameObject.anims.currentAnim?.key !== `NPC_1_${this._direction}`){
-                    this._phaserGameObject.play(`NPC_1_${this._direction}`)
+                if(!this._phaserGameObject.anims.isPlaying || this._phaserGameObject.anims.currentAnim?.key !== `${animKeyPrefix}_${this._direction}`){
+                    this._phaserGameObject.play(`${animKeyPrefix}_${this._direction}`)
                     this._phaserGameObject.setFlipX(false)
                 }
             break;
             case DIRECTION.LEFT:
-                if(!this._phaserGameObject.anims.isPlaying || this._phaserGameObject.anims.currentAnim?.key !== `NPC_1_${DIRECTION.RIGHT}`){
-                    this._phaserGameObject.play(`NPC_1_${DIRECTION.RIGHT}`)
+                if(!this._phaserGameObject.anims.isPlaying || this._phaserGameObject.anims.currentAnim?.key !== `${animKeyPrefix}_${DIRECTION.RIGHT}`){
+                    this._phaserGameObject.play(`${animKeyPrefix}_${DIRECTION.RIGHT}`)
                     this._phaserGameObject.setFlipX(true)
                 }
                 break;

@@ -1,8 +1,10 @@
 import Phaser from "../../lib/phaser.js";
 import { exhaustiveGuard } from "../../utils/guard.js";
 import { ATTACK_KEYS } from "./attack-key.js";
+import { Bite } from "./bite.js";
 import { Grenade } from "./grenade.js";
 import { Slash } from "./slash.js";
+import { Smokebomb } from "./smokebomb.js";
 
 
 /**
@@ -25,6 +27,10 @@ export class AttackManager{
     #grenadeAttack
     /**@type {Slash} */
     #slashAttack
+    /**@type {Bite} */
+    #biteAttack
+    /**@type {Smokebomb} */
+    #smokebombAttack
 
     /**
      * 
@@ -75,6 +81,22 @@ export class AttackManager{
                 }
                 this.#slashAttack.gameObject.setPosition(x,y)
                 this.#slashAttack.playAnimation(callback)
+                break;
+            case ATTACK_KEYS.BITE:
+                console.log('USANDO BITE')
+                if(!this.#biteAttack){
+                    this.#biteAttack = new Bite(this.#scene, {x,y})
+                }
+                this.#biteAttack.gameObject.setPosition(x,y)
+                this.#biteAttack.playAnimation(callback)
+                break;
+            case ATTACK_KEYS.SMOKEBOMB:
+                console.log('USANDO SMOKEBOMB')
+                if(!this.#smokebombAttack){
+                    this.#smokebombAttack = new Smokebomb(this.#scene, {x,y})
+                }
+                this.#smokebombAttack.gameObject.setPosition(x,y)
+                this.#smokebombAttack.playAnimation(callback)
                 break;
             default:
                 exhaustiveGuard(attack)
