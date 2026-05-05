@@ -604,8 +604,15 @@ export class BattleScene extends BaseScene {
                             });
                             this.scene.pause();
                         } else {
-                            // Si no tiene más monstruos, terminar la batalla
-                            this.#battleStateMachine.setState(BATTLE_STATES.FINISHED)
+                            // Si no tiene más monstruos, mostrar mensaje y terminar la batalla
+                            this.#battleMenu.updateInfoPaneMessageNoInputRequired(
+                                this.#i18n.t('BATTLE.NO_MORE_MONSTERS'),
+                                () => {
+                                    this.time.delayedCall(1800, () => {
+                                        this.#battleStateMachine.setState(BATTLE_STATES.FINISHED);
+                                    });
+                                }
+                            );
                         }
                     })
                 }
@@ -733,13 +740,14 @@ export class BattleScene extends BaseScene {
             dataManager.store.set(DATA_MANAGER_STORE_KEYS.MONSTER_IN_PARTY, party);
         }
 
-
         // Efecto de fade out con temblor final
         this.cameras.main.shake(200, 0.01);
 
+        console.log('Iniciando fade out hacia WorldScene...');
         this.time.delayedCall(300, () => {
-            this.cameras.main.fadeOut(2600, 0, 0, 0);
+            this.cameras.main.fadeOut(1000, 0, 0, 0); // Reducido a 1s para probar
             this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, () => {
+                console.log('Fade out completado, iniciando WorldScene');
                 this.scene.start(SCENE_KEYS.WORLD_SCENE);
             });
         });

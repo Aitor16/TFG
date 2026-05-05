@@ -132,6 +132,7 @@
     "SUNNY_WEATHER_DAMAGE": "The scorching sun damages all monsters...",
     "ACCURACY_LOWERED": "{monster}'s accuracy fell!",
     "GOT_ITEM": "You got a {itemName}!",
-    "COME_BACK_MONSTER": "Come back {monster}! Good job!"
+    "COME_BACK_MONSTER": "Come back {monster}! Good job!",
+    "NO_MORE_MONSTERS": "You have no more monsters! Escaping to safety..."
   }
 }

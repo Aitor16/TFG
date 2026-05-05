@@ -132,6 +132,7 @@
     "SUNNY_WEATHER_DAMAGE": "El sol abrasador daña a todos los monstruos...",
     "ACCURACY_LOWERED": "¡La precisión de {monster} ha bajado!",
     "GOT_ITEM": "¡Has obtenido un/a {itemName}!",
-    "COME_BACK_MONSTER": "¡Vuelve {monster}! ¡Buen trabajo!"
+    "COME_BACK_MONSTER": "¡Vuelve {monster}! ¡Buen trabajo!",
+    "NO_MORE_MONSTERS": "¡No te quedan más monstruos! Huyendo a salvo..."
   }
 }
