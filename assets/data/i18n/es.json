@@ -85,7 +85,10 @@
     "CHOOSE_MONSTER": "Elige un monstruo",
     "CANNOT_HEAL_FAINTED": "No se puede curar a monstruos debilitados",
     "ALREADY_FULL_HP": "El monstruo ya tiene los PS al máximo",
-    "HEALED_BY": "Se ha curado al monstruo {amount} PS"
+    "HEALED_BY": "Se ha curado al monstruo {amount} PS",
+    "CANNOT_SWITCH_FAINTED": "No puedes cambiar a un monstruo debilitado",
+    "ALREADY_IN_BATTLE": "Este monstruo ya está en combate",
+    "MUST_CHOOSE_MONSTER": "Debes elegir otro monstruo para continuar"
   },
   "MONSTER_DETAILS": {
     "TITLE": "Detalles del Monstruo"
@@ -122,12 +125,13 @@
     "ENEMY_USED_ATTACK": "¡{monster} usó {attack}!",
     "ATTACK_MISSED": "¡{monster} ha fallado su ataque!",
     "ENEMY_FAINTED": "¡{monster} salvaje se ha debilitado! Has ganado experiencia.",
-    "PLAYER_FAINTED": "¡Tu monstruo se ha debilitado! Huyendo a salvo...",
+    "PLAYER_FAINTED": "¡{monster} se ha debilitado!",
     "WILD_MONSTER_APPEARED": "¡Un {monster} salvaje emerge del yermo!",
     "GO_MONSTER": "¡Adelante {monster}! ¡Lucha por tu supervivencia!",
     "FLEE_SUCCESS": "¡Has escapado del horror del yermo!",
     "SUNNY_WEATHER_DAMAGE": "El sol abrasador daña a todos los monstruos...",
     "ACCURACY_LOWERED": "¡La precisión de {monster} ha bajado!",
-    "GOT_ITEM": "¡Has obtenido un/a {itemName}!"
+    "GOT_ITEM": "¡Has obtenido un/a {itemName}!",
+    "COME_BACK_MONSTER": "¡Vuelve {monster}! ¡Buen trabajo!"
   }
 }

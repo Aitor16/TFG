@@ -103,4 +103,5 @@ export const ITEM_EFFECT = Object.freeze({
  * @type {object}
  * @property {string} previousSceneName
  * @property {Item} [itemSelected]
+ * @property {boolean} [isForcedSwitch]
  */

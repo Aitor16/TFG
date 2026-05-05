@@ -227,4 +227,9 @@ export class BattleMonster {
     playDeathAnimation(callback) {
         throw new Error('playDeathAnimation is not implemented')
     }
+
+    destroy() {
+        this._phaserGameObject.destroy();
+        this._phaserHealthBarGameContainer.destroy();
+    }
 }

@@ -67,7 +67,6 @@
     "2": "Grenade",
     "3": "Smoke Bomb",
     "4": "Bite"
-
   },
   "ITEMS": {
     "1": {
@@ -86,7 +85,10 @@
     "CHOOSE_MONSTER": "Choose a monster",
     "CANNOT_HEAL_FAINTED": "Cannot heal fainted monsters",
     "ALREADY_FULL_HP": "Monster is already full HP",
-    "HEALED_BY": "Healed monster by {amount} HP"
+    "HEALED_BY": "Healed monster by {amount} HP",
+    "CANNOT_SWITCH_FAINTED": "Cannot switch to a fainted monster",
+    "ALREADY_IN_BATTLE": "Monster is already in battle",
+    "MUST_CHOOSE_MONSTER": "You must choose another monster to continue"
   },
   "MONSTER_DETAILS": {
     "TITLE": "Monster Details"
@@ -123,12 +125,13 @@
     "ENEMY_USED_ATTACK": "{monster} used {attack}",
     "ATTACK_MISSED": "{monster}'s attack missed!",
     "ENEMY_FAINTED": "Wild {monster} fainted, You have gained some experience",
-    "PLAYER_FAINTED": "{monster} fainted, You have no more monsters, escaping to safety...",
+    "PLAYER_FAINTED": "{monster} fainted!",
     "WILD_MONSTER_APPEARED": "A wild {monster} emerges from the wasteland!",
     "GO_MONSTER": "Go {monster}! Fight for survival!",
     "FLEE_SUCCESS": "You escaped from the wasteland horror!",
     "SUNNY_WEATHER_DAMAGE": "The scorching sun damages all monsters...",
     "ACCURACY_LOWERED": "{monster}'s accuracy fell!",
-    "GOT_ITEM": "You got a {itemName}!"
+    "GOT_ITEM": "You got a {itemName}!",
+    "COME_BACK_MONSTER": "Come back {monster}! Good job!"
   }
 }

@@ -368,6 +368,7 @@ export class BattleScene extends BaseScene {
                 return;
             }
 
+
             if (this.#battleMenu.wasFleeSelected) {
                 console.log('HUIDA DETECTADA EN BATTLE SCENE');
                 this.#battleStateMachine.setState(BATTLE_STATES.FLEE_ATTEMPT)
@@ -400,6 +401,14 @@ export class BattleScene extends BaseScene {
 
         if (selectedDirection !== DIRECTION.NONE) {
             this.#battleMenu.handlePlayerInput(selectedDirection);
+        }
+    }
+
+    handleSceneResume(sys, data) {
+        super.handleSceneResume(sys, data);
+        console.log(`[${BattleScene.name}:handleSceneResume] invoked, data: ${JSON.stringify(data)}`);
+        if (data && data.monsterSwitched) {
+            this.#handleMonsterSwitch();
         }
     }
 
@@ -560,7 +569,7 @@ export class BattleScene extends BaseScene {
                 this.#battleMenu.updateInfoPaneMessageNoInputRequired(
                     this.#i18n.t('BATTLE.ENEMY_FAINTED', { monster: this.#activeEnemyMonster.name }),
                     () => {
-                        // Dar una poción al finalizar (ID: 1)
+                        // Obtener pocion tras combate
                         dataManager.addItem(1, 1);
                         const potionName = this.#i18n.t('ITEMS.1.NAME');
                         this.#battleMenu.updateInfoPaneMessagesWaitForInput(
@@ -577,11 +586,27 @@ export class BattleScene extends BaseScene {
 
         if (this.#activePlayerMonster.isFainted) {
             this.#battleMenu.updateInfoPaneMessagesWaitForInput(
-                [this.#i18n.t('BATTLE.PLAYER_FAINTED')],
+                [this.#i18n.t('BATTLE.PLAYER_FAINTED', { monster: this.#activePlayerMonster.name })],
                 () => {
                     this.#activePlayerMonster.playDeathAnimation(() => {
                         this.#createDeathEffect(this.#activePlayerMonster);
-                        this.#battleStateMachine.setState(BATTLE_STATES.FINISHED)
+
+                        // Verificar si al jugador le quedan más monstruos vivos
+                        const party = dataManager.store.get(DATA_MANAGER_STORE_KEYS.MONSTER_IN_PARTY);
+                        const hasLivingMonster = party.some(monster => monster.currentHP > 0);
+
+                        if (hasLivingMonster) {
+                            // Si tiene más monstruos, forzar el cambio sin perder el turno
+                            this.#battleMenu.hideMainBattleMenu();
+                            this.scene.launch(SCENE_KEYS.MONSTER_PARTY_SCENE, {
+                                previousSceneName: SCENE_KEYS.BATTLE_SCENE,
+                                isForcedSwitch: true
+                            });
+                            this.scene.pause();
+                        } else {
+                            // Si no tiene más monstruos, terminar la batalla
+                            this.#battleStateMachine.setState(BATTLE_STATES.FINISHED)
+                        }
                     })
                 }
             )
@@ -649,6 +674,51 @@ export class BattleScene extends BaseScene {
                 onComplete: () => particle.destroy()
             });
         }
+    }
+
+    #handleMonsterSwitch() {
+        this._controls.lockInput = true;
+        this.#battleMenu.hideMainBattleMenu();
+        this.#battleMenu.hideCharacterAttackSubmenu();
+
+        const selectedMonsterIndex = this.#battleMenu.selectedMonsterIndex;
+        const party = dataManager.store.get(DATA_MANAGER_STORE_KEYS.MONSTER_IN_PARTY);
+
+        const [selectedMonster] = party.splice(selectedMonsterIndex, 1);
+        party.unshift(selectedMonster);
+        dataManager.store.set(DATA_MANAGER_STORE_KEYS.MONSTER_IN_PARTY, party);
+
+        this.#battleMenu.updateInfoPaneMessageNoInputRequired(
+            this.#i18n.t('BATTLE.COME_BACK_MONSTER', { monster: this.#activePlayerMonster.name }),
+            () => {
+                this.time.delayedCall(500, () => {
+                    const isForcedSwitch = this.#activePlayerMonster.isFainted;
+                    this.#activePlayerMonster.destroy();
+
+                    this.#activePlayerMonster = new PlayerBattleMonster({
+                        scene: this,
+                        monsterDetails: party[0],
+                        skipBattleAnimations: this.#skipAnimations,
+                    });
+                    this.#applyPostApocalypticFilter(this.#activePlayerMonster);
+
+                    this.#battleMenu.updateActiveMonster(this.#activePlayerMonster);
+
+                    this.#activePlayerMonster.playMonsterAppearAnimation(() => {
+                        this.#activePlayerMonster.playMonsterHealthBarAppearAnimation(() => undefined);
+                        const goMsg = this.#i18n.t('BATTLE.GO_MONSTER', { monster: this.#activePlayerMonster.name });
+                        this.#battleMenu.updateInfoPaneMessageNoInputRequired(goMsg, () => {
+                            this.time.delayedCall(1200, () => {
+                                this._controls.lockInput = false;
+                                this.#battleMenu.clearMonsterSwitched();
+                                // Si el cambio fue por debilitamiento, el jugador no pierde el turno
+                                this.#battleStateMachine.setState(isForcedSwitch ? BATTLE_STATES.PLAYER_INPUT : BATTLE_STATES.ENEMY_INPUT);
+                            });
+                        });
+                    });
+                });
+            }
+        );
     }
 
     //EFECTO DE TRANSICION EN ESCENAS
@@ -747,8 +817,11 @@ export class BattleScene extends BaseScene {
                 //then play health bar animation, brief pause
                 //then repeat the steps above for the other monster
 
-                if (this.#battleMenu.wasItemUsed) {
-                    this.#activePlayerMonster.updateMonsterHealth(dataManager.store.get(DATA_MANAGER_STORE_KEYS.MONSTER_IN_PARTY)[0].currentHP)
+                if (this.#battleMenu.wasItemUsed || this.#battleMenu.wasMonsterSwitched) {
+                    if (this.#battleMenu.wasItemUsed) {
+                        this.#activePlayerMonster.updateMonsterHealth(dataManager.store.get(DATA_MANAGER_STORE_KEYS.MONSTER_IN_PARTY)[0].currentHP)
+                        this.#battleMenu.resetHasUsedItem();
+                    }
                     this.time.delayedCall(500, () => {
                         this.#enemyAttack(() => {
                             this.#battleStateMachine.setState(BATTLE_STATES.POST_ATTACK_CHECK);

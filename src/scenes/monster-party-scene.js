@@ -134,6 +134,9 @@ export class MonsterPartyScene extends BaseScene {
                 this.#waitingForInput = false;
                 return;
             }
+            if (this.#sceneData?.isForcedSwitch) {
+                return;
+            }
             this.#goBackToPreviousScene(false);
             return;
         }
@@ -146,12 +149,35 @@ export class MonsterPartyScene extends BaseScene {
                 return;
             }
             if (this.#selectedPartyMonsterIndex === -1) {
+                if (this.#sceneData?.isForcedSwitch) {
+                    this.#infoTextGameObject.setText(this.#i18n.t('MONSTER_PARTY.MUST_CHOOSE_MONSTER'));
+                    this.#waitingForInput = true;
+                    return;
+                }
                 this.#goBackToPreviousScene(false);
                 return
             }
 
             if (this.#sceneData.previousSceneName === SCENE_KEYS.INVENTORY_SCENE && this.#sceneData.itemSelected) {
                 this.#handleItemUsed();
+                return;
+            }
+
+            if (this.#sceneData.previousSceneName === SCENE_KEYS.BATTLE_SCENE) {
+                const selectedMonster = this.#monsters[this.#selectedPartyMonsterIndex];
+                if (selectedMonster.currentHP <= 0) {
+                    this.#infoTextGameObject.setText(this.#i18n.t('MONSTER_PARTY.CANNOT_SWITCH_FAINTED'));
+                    this.#waitingForInput = true;
+                    return;
+                }
+
+                if (this.#selectedPartyMonsterIndex === 0) {
+                    this.#infoTextGameObject.setText(this.#i18n.t('MONSTER_PARTY.ALREADY_IN_BATTLE'));
+                    this.#waitingForInput = true;
+                    return;
+                }
+
+                this.#goBackToPreviousScene(false, true, this.#selectedPartyMonsterIndex);
                 return;
             }
 
@@ -266,11 +292,10 @@ export class MonsterPartyScene extends BaseScene {
         return container;
     }
 
-    #goBackToPreviousScene(itemUsed) {
-        //
+    #goBackToPreviousScene(itemUsed, monsterSwitched = false, selectedMonsterIndex = -1) {
         this._controls.lockInput = true;
         this.scene.stop(SCENE_KEYS.MONSTER_PARTY_SCENE)
-        this.scene.resume(this.#sceneData.previousSceneName, { itemUsed })
+        this.scene.resume(this.#sceneData.previousSceneName, { itemUsed, monsterSwitched, selectedMonsterIndex })
     }
 
     /**
