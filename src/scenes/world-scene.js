@@ -365,7 +365,7 @@ export class WorldScene extends BaseScene {
     handleSceneResume(sys, data) {
         super.handleSceneResume(sys, data);
         console.log(`[${WorldScene.name}:handleSceneResume] invoked`);
-        
+
         // Si estábamos interactuando con un NPC, liberamos su estado para que vuelva a moverse
         if (this.#npcPlayerIsInteractingWith) {
             console.log(`[${WorldScene.name}:handleSceneResume] resetting NPC interaction state`);
@@ -463,6 +463,31 @@ export class WorldScene extends BaseScene {
             x: this.#player.sprite.x,
             y: this.#player.sprite.y
         });
+
+        // Verificamos si el jugador está en un punto de encuentro fijo (siempre activa la batalla)
+        const fixedEncounterPoints = [
+            { x: 1920, y: 2368 }
+        ];
+
+        const isOnFixedEncounter = fixedEncounterPoints.some(
+            (point) => this.#player.sprite.x === point.x && this.#player.sprite.y === point.y
+        );
+
+        if (isOnFixedEncounter) {
+            console.log(`[${WorldScene.name}:handlePlayerMovementUpdate] el jugador está en punto de encuentro fijo en (${this.#player.sprite.x}, ${this.#player.sprite.y})`);
+
+            // 20% de probabilidad de encontrar un monstruo
+            this.#wildMonsterEncountered = Math.random() < 0.5;
+
+            if (this.#wildMonsterEncountered) {
+                console.log(`[${WorldScene.name}:handlePlayerMovementUpdate] el jugador encontró un monstruo en punto de encuentro fijo`);
+                this.cameras.main.fadeOut(2000);
+                this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, () => {
+                    this.scene.start(SCENE_KEYS.BATTLE_SCENE);
+                });
+            }
+            return;
+        }
 
         // Si no hay capa de encuentros, salimos
         if (!this.#encounterLayer) {
@@ -562,9 +587,9 @@ export class WorldScene extends BaseScene {
             /**
              * @type {string | undefined} - Fondo de diálogo del NPC
              */
-            let npcDialogBackground = NPC_DIALOG_BACKGROUNDS[layerName] || 
-                                    NPC_DIALOG_BACKGROUNDS[npcObject.name] || 
-                                    npcObject.properties.find((property) => property.name === TILED_NPC_PROPERTY.DIALOG_BACKGROUND)?.value;
+            let npcDialogBackground = NPC_DIALOG_BACKGROUNDS[layerName] ||
+                NPC_DIALOG_BACKGROUNDS[npcObject.name] ||
+                npcObject.properties.find((property) => property.name === TILED_NPC_PROPERTY.DIALOG_BACKGROUND)?.value;
 
             // Dividimos los mensajes por el separador '::' y los traducimos
             const npcMessages = npcMessagesString.split('::').map(msg => this.#i18n.t(msg));
